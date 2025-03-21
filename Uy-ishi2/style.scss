@@ -1,0 +1,59 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+h2{
+    height: 100px;
+    width: 90vw;
+    line-height: 100px;
+    position: relative; 
+    margin: auto;
+    background-color: blue;
+}
+body{
+    border: 7px solid gray;
+    width: 90.8vw;
+    margin: auto;
+    height: 90vh;
+    margin-top: 30px;
+}
+.ota{
+    width: 51vw;
+    height: 61.2vh;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+main{
+    width: 30vw;
+    height: 260px;
+    background-color: greenyellow;
+}
+aside{
+    width: 20vw;
+    height: 260px;
+    background-color: purple;
+}
+section{
+    width: 24vw;
+    height: 260px;
+    background-color: orange;
+}
+nav{
+    width: 26vw;
+    height: 260px;
+    background-color: orange;
+}
+h1{
+    line-height: 260px;
+    text-align: center;
+}
+section h1{
+    line-height: 200px;
+}
+nav h1{
+    line-height: 200px;
+}
