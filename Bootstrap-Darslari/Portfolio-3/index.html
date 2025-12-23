@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sherjonov Abduaziz — Premium Frontend Portfolio</title>
+  <meta name="description" content="Abduaziz Sherjonov — 2+ yillik tajribali Frontend Developer. HTML, CSS, JavaScript, Tailwind, SCSS, Bootstrap, React">
+  <meta property="og:title" content="Sherjonov Abduaziz — Frontend Developer">
+  <meta property="og:description" content="Professional veb interfeyslar yarataman. 50+ loyiha, 25+ mijoz.">
+  <meta property="og:type" content="website">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons & Libraries -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6366F1',
+            secondary: '#0EA5E9',
+            accent: '#F59E0B',
+            dark: '#071024',
+            'dark-card': '#0F172A'
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif']
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'gradient': 'gradient 8s ease infinite'
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' }
+            },
+            gradient: {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    :root {
+      --color-bg: #071024;
+      --color-card: #0F172A;
+      --color-text: #F1F5F9;
+      --color-text-muted: #94A3B8;
+      --color-primary: #6366F1;
+      --color-secondary: #0EA5E9;
+      --color-accent: #F59E0B;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #071024 0%, #0C1A3A 100%);
+      color: var(--color-text);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+      border-radius: 5px;
+    }
+    
+    /* Glass Effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Button Styles */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--color-primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
+    
+    /* Project Badge */
+    .project-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: linear-gradient(135deg, #F59E0B, #EC4899);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      z-index: 10;
+    }
+    
+    /* Section Spacing */
+    section {
+      padding: 5rem 0;
+    }
+    
+    /* Typography */
+    h1, h2, h3, h4 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Loading Animation */
+    .loading-bar {
+      height: 4px;
+      background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+      border-radius: 2px;
+      animation: loading 2s ease-in-out infinite;
+    }
+    
+    @keyframes loading {
+      0%, 100% { width: 0%; }
+      50% { width: 100%; }
+    }
+  </style>
+</head>
+<body class="font-inter">
+  <!-- Preloader -->
+  <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-dark">
+    <div class="relative">
+      <div class="w-24 h-24 rounded-full border-4 border-transparent border-t-primary border-r-secondary animate-spin"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-2xl font-bold gradient-text">SA</div>
+      </div>
+    </div>
+    <div class="mt-8 w-64">
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 py-4 transition-all duration-300 glass">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-3 group">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <span class="text-white font-bold text-xl">SA</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold group-hover:text-primary transition-colors">Sherjonov Abduaziz</h1>
+            <p class="text-sm text-text-muted">Frontend Developer</p>
+          </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#home" class="text-sm font-medium hover:text-primary transition-colors">Bosh Sahifa</a>
+          <a href="#about" class="text-sm font-medium hover:text-primary transition-colors">Men haqimda</a>
+          <a href="#projects" class="text-sm font-medium hover:text-primary transition-colors">Loyihalar</a>
+          <a href="#skills" class="text-sm font-medium hover:text-primary transition-colors">Ko'nikmalar</a>
+          <a href="#contact" class="text-sm font-medium hover:text-primary transition-colors">Aloqa</a>
+          
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:scale-110 transition-transform">
+            <i class="fas fa-moon text-yellow-400"></i>
+          </button>
+          
+          <!-- Language Toggle -->
+          <button id="languageToggle" class="px-4 py-2 rounded-lg glass text-sm font-medium hover:text-primary transition-colors">
+            <i class="fas fa-globe mr-2"></i>UZ
+          </button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuButton" class="md:hidden w-10 h-10 rounded-lg glass flex items-center justify-center">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="fixed inset-0 z-30 bg-dark/95 backdrop-blur-sm hidden md:hidden">
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex justify-end mb-8">
+        <button id="closeMobileMenu" class="w-10 h-10 rounded-lg glass flex items-center justify-center">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="flex flex-col space-y-6">
+        <a href="#home" class="text-2xl font-bold hover:text-primary transition-colors py-2">Bosh Sahifa</a>
+        <a href="#about" class="text-2xl font-bold hover:text-primary transition-colors py-2">Men haqimda</a>
+        <a href="#projects" class="text-2xl font-bold hover:text-primary transition-colors py-2">Loyihalar</a>
+        <a href="#skills" class="text-2xl font-bold hover:text-primary transition-colors py-2">Ko'nikmalar</a>
+        <a href="#contact" class="text-2xl font-bold hover:text-primary transition-colors py-2">Aloqa</a>
+        <div class="flex items-center space-x-4 pt-8">
+          <button id="mobileThemeToggle" class="flex-1 py-3 rounded-lg glass">
+            <i class="fas fa-moon mr-2"></i>Tema
+          </button>
+          <button id="mobileLanguageToggle" class="flex-1 py-3 rounded-lg glass">
+            <i class="fas fa-globe mr-2"></i>Til
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section id="home" class="relative pt-24 pb-20 md:pt-32 md:pb-28">
+    <div class="container mx-auto px-4">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Left Content -->
+        <div>
+          <div class="inline-flex items-center px-4 py-2 rounded-full glass mb-6">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span>
+            <span class="text-sm">Mavjud: Loyihalar uchun</span>
+          </div>
+          
+          <h1 class="text-4xl md:text-6xl font-bold mb-6">
+            <span class="block">Men</span>
+            <span class="gradient-text" id="typedText"></span>
+          </h1>
+          
+          <p class="text-lg text-text-muted mb-8 max-w-xl">
+            2+ yillik tajribaga ega Frontend Developer. Zamonaviy, tezkor va foydalanuvchi uchun qulay veb interfeyslar yarataman. Har bir loyihada kod sifati va perfomansga alohida e'tibor qarataman.
+          </p>
+          
+          <div class="flex flex-wrap gap-4">
+            <a href="#projects" class="btn-primary inline-flex items-center">
+              <span>Loyihalarni ko'rish</span>
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+            <a href="#contact" class="btn-secondary inline-flex items-center">
+              <i class="fas fa-paper-plane mr-2"></i>
+              <span>Bog'lanish</span>
+            </a>
+          </div>
+          
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-6 mt-12">
+            <div>
+              <div class="text-3xl font-bold gradient-text mb-2" data-count="50">0</div>
+              <div class="text-sm text-text-muted">Bajargan loyihalar</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold gradient-text mb-2" data-count="25">0</div>
+              <div class="text-sm text-text-muted">Mamnun mijozlar</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold gradient-text mb-2" data-count="2">0</div>
+              <div class="text-sm text-text-muted">Yillik tajriba</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Content - 3D Profile -->
+        <div class="relative">
+          <div class="relative glass rounded-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+            <div class="relative z-10">
+              <div class="w-full aspect-square rounded-xl overflow-hidden mb-6">
+                <div class="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                  <div class="text-center">
+                    <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4">
+                      <span class="text-4xl font-bold text-white">SA</span>
+                    </div>
+                    <h3 class="text-2xl font-bold">Sherjonov Abduaziz</h3>
+                    <p class="text-text-muted">Frontend Developer</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-4 rounded-lg bg-dark-card">
+                  <div class="text-2xl font-bold text-primary">100%</div>
+                  <div class="text-sm text-text-muted">Topshiriq</div>
+                </div>
+                <div class="text-center p-4 rounded-lg bg-dark-card">
+                  <div class="text-2xl font-bold text-secondary">24/7</div>
+                  <div class="text-sm text-text-muted">Qo'llab-quvvat</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Floating Elements -->
+            <div class="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-primary/10 animate-float"></div>
+            <div class="absolute -bottom-4 -right-4 w-16 h-16 rounded-full bg-secondary/10 animate-float" style="animation-delay: 2s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="bg-dark-card/50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">Portfolio Loyihalar</h2>
+        <p class="text-text-muted max-w-2xl mx-auto">Har bir loyiha o'ziga xos texnologiyalar va yechimlar bilan yaratilgan</p>
+      </div>
+
+      <!-- Project Filter -->
+      <div class="flex flex-wrap justify-center gap-3 mb-12">
+        <button class="filter-btn active px-5 py-2 rounded-full glass hover:bg-primary/20 transition-all" data-filter="all">Barchasi</button>
+        <button class="filter-btn px-5 py-2 rounded-full glass hover:bg-primary/20 transition-all" data-filter="web">Veb Saytlar</button>
+        <button class="filter-btn px-5 py-2 rounded-full glass hover:bg-primary/20 transition-all" data-filter="app">Web App</button>
+        <button class="filter-btn px-5 py-2 rounded-full glass hover:bg-primary/20 transition-all" data-filter="ecommerce">E-commerce</button>
+        <button class="filter-btn px-5 py-2 rounded-full glass hover:bg-primary/20 transition-all" data-filter="landing">Landing</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="projectsContainer">
+        
+        <!-- Project 1: TechPro Task Manager -->
+        <div class="project-card glass rounded-2xl overflow-hidden group" data-category="web app">
+          <div class="relative overflow-hidden">
+            <div class="h-48 bg-gradient-to-br from-blue-500/20 to-cyan-500/20"></div>
+            <div class="project-badge">LIVE</div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <a href="https://techprosite1.netlify.app/" target="_blank" class="btn-primary">
+                <i class="fas fa-external-link-alt mr-2"></i>Demo'ni ko'rish
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-bold group-hover:text-primary transition-colors">TechPro Task Manager</h3>
+              <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-400">Web App</span>
+            </div>
+            <p class="text-text-muted mb-4">To'liq funksional vazifa boshqaruv tizimi. Drag & drop, localStorage, va real-time updates.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">HTML/CSS</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">JavaScript</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Tailwind</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">LocalStorage</span>
+            </div>
+            <button onclick="openProjectModal(1)" class="w-full py-3 rounded-lg border border-white/10 hover:border-primary/50 transition-colors text-sm font-medium">
+              <i class="fas fa-eye mr-2"></i>Batafsil ma'lumot
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 2: Modern Landing -->
+        <div class="project-card glass rounded-2xl overflow-hidden group" data-category="landing">
+          <div class="relative overflow-hidden">
+            <div class="h-48 bg-gradient-to-br from-purple-500/20 to-pink-500/20"></div>
+            <div class="project-badge">LIVE</div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <a href="https://malumotli-site.netlify.app/" target="_blank" class="btn-primary">
+                <i class="fas fa-external-link-alt mr-2"></i>Demo'ni ko'rish
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-bold group-hover:text-primary transition-colors">Modern Landing Page</h3>
+              <span class="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-400">Landing</span>
+            </div>
+            <p class="text-text-muted mb-4">Zamonaviy marketing landing page. AOS animatsiyalar, smooth scroll, va mukammal responsive dizayn.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">HTML5</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">CSS3</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">JavaScript</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">AOS.js</span>
+            </div>
+            <button onclick="openProjectModal(2)" class="w-full py-3 rounded-lg border border-white/10 hover:border-primary/50 transition-colors text-sm font-medium">
+              <i class="fas fa-eye mr-2"></i>Batafsil ma'lumot
+            </button>
+          </div>
+        </div>
+
+        <!-- ✅ PROJECT 3: CREATE X ONLINE SCHOOL -->
+        <div class="project-card glass rounded-2xl overflow-hidden group" data-category="web app">
+          <div class="relative overflow-hidden">
+            <div class="h-48 bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-4xl font-bold text-white mb-2">CREATE<span class="text-cyan-400">X</span></div>
+                <p class="text-sm opacity-80">Online Learning Platform</p>
+              </div>
+            </div>
+            <div class="project-badge" style="background:linear-gradient(135deg,#00d4ff,#0099cc)">POPULAR</div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <a href="https://httpsmyportpolionetlifyapp.netlify.app/" target="_blank" class="btn-primary">
+                <i class="fas fa-external-link-alt mr-2"></i>Demo'ni ko'rish
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-bold group-hover:text-cyan-400 transition-colors">Createx Online School</h3>
+              <span class="text-xs px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400">Premium</span>
+            </div>
+            <p class="text-text-muted mb-4">Professional online kurslar platformasi. Kurslarni filterlash, izlash, modal windows va real-time interaktiv.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">HTML5</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">CSS3</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Vanilla JS</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Intersection</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Netlify</span>
+            </div>
+            <button onclick="openProjectModal(3)" class="w-full py-3 rounded-lg border border-white/10 hover:border-cyan-500/50 transition-colors text-sm font-medium">
+              <i class="fas fa-graduation-cap mr-2"></i>Case Study'ni ko'rish
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 4: E-commerce Dashboard -->
+        <div class="project-card glass rounded-2xl overflow-hidden group" data-category="ecommerce">
+          <div class="relative overflow-hidden">
+            <div class="h-48 bg-gradient-to-br from-green-500/20 to-emerald-500/20"></div>
+            <div class="project-badge">NEW</div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <a href="#" class="btn-primary">
+                <i class="fas fa-external-link-alt mr-2"></i>Tez kunda
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-bold group-hover:text-primary transition-colors">ShopDash E-commerce</h3>
+              <span class="text-xs px-3 py-1 rounded-full bg-green-500/20 text-green-400">Dashboard</span>
+            </div>
+            <p class="text-text-muted mb-4">Online do'kon uchun admin paneli. Mahsulotlar boshqaruvi, buyurtmalar va foydalanuvchilar.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">React</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">TypeScript</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Tailwind</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Chart.js</span>
+            </div>
+            <button onclick="openProjectModal(4)" class="w-full py-3 rounded-lg border border-white/10 hover:border-primary/50 transition-colors text-sm font-medium">
+              <i class="fas fa-eye mr-2"></i>Batafsil ma'lumot
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 5: Portfolio Template -->
+        <div class="project-card glass rounded-2xl overflow-hidden group" data-category="web">
+          <div class="relative overflow-hidden">
+            <div class="h-48 bg-gradient-to-br from-orange-500/20 to-red-500/20"></div>
+            <div class="project-badge">FREE</div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <a href="#" class="btn-primary">
+                <i class="fas fa-download mr-2"></i>Yuklab olish
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-bold group-hover:text-primary transition-colors">Portfolio Template</h3>
+              <span class="text-xs px-3 py-1 rounded-full bg-orange-500/20 text-orange-400">Template</span>
+            </div>
+            <p class="text-text-muted mb-4">Freelancerlar uchun bepul portfolio shablon. Responsive, dark/light theme va animatsiyalar.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">HTML</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">CSS</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">GSAP</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Responsive</span>
+            </div>
+            <button onclick="openProjectModal(5)" class="w-full py-3 rounded-lg border border-white/10 hover:border-primary/50 transition-colors text-sm font-medium">
+              <i class="fas fa-eye mr-2"></i>Batafsil ma'lumot
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 6: Real-time Chat App -->
+        <div class="project-card glass rounded-2xl overflow-hidden group" data-category="app">
+          <div class="relative overflow-hidden">
+            <div class="h-48 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20"></div>
+            <div class="project-badge">API</div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <a href="#" class="btn-primary">
+                <i class="fas fa-code mr-2"></i>Kodni ko'rish
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-bold group-hover:text-primary transition-colors">ChatWave Messenger</h3>
+              <span class="text-xs px-3 py-1 rounded-full bg-violet-500/20 text-violet-400">Real-time</span>
+            </div>
+            <p class="text-text-muted mb-4">Real-time chat ilovasi. Socket.io, media yuborish, guruh chatlari va end-to-end encryption.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Node.js</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">Socket.io</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">React</span>
+              <span class="text-xs px-3 py-1 rounded-full bg-dark-card">MongoDB</span>
+            </div>
+            <button onclick="openProjectModal(6)" class="w-full py-3 rounded-lg border border-white/10 hover:border-primary/50 transition-colors text-sm font-medium">
+              <i class="fas fa-eye mr-2"></i>Batafsil ma'lumot
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- View More Button -->
+      <div class="text-center mt-12">
+        <a href="#contact" class="btn-primary inline-flex items-center px-8 py-4 text-lg">
+          <i class="fas fa-rocket mr-3"></i>
+          <span>Loyihangizni boshlaymizmi?</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">Texnik Ko'nikmalar</h2>
+        <p class="text-text-muted max-w-2xl mx-auto">Har bir texnologiyani chuqur o'rganib, real loyihalarda qo'llayman</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Skill 1 -->
+        <div class="glass p-6 rounded-2xl text-center group hover:scale-105 transition-transform">
+          <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center mb-4 group-hover:from-blue-500/30 group-hover:to-blue-600/30 transition-all">
+            <i class="fab fa-html5 text-4xl text-blue-500"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">HTML5 & CSS3</h3>
+          <p class="text-text-muted text-sm mb-4">Semantik HTML, CSS Grid, Flexbox, Animations</p>
+          <div class="w-full bg-dark-card rounded-full h-2">
+            <div class="h-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full w-full"></div>
+          </div>
+          <div class="text-right mt-2 text-sm text-blue-400 font-bold">100%</div>
+        </div>
+
+        <!-- Skill 2 -->
+        <div class="glass p-6 rounded-2xl text-center group hover:scale-105 transition-transform">
+          <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 flex items-center justify-center mb-4 group-hover:from-yellow-500/30 group-hover:to-yellow-600/30 transition-all">
+            <i class="fab fa-js text-4xl text-yellow-500"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">JavaScript</h3>
+          <p class="text-text-muted text-sm mb-4">ES6+, DOM, APIs, Async, OOP, Functional</p>
+          <div class="w-full bg-dark-card rounded-full h-2">
+            <div class="h-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full w-[90%]"></div>
+          </div>
+          <div class="text-right mt-2 text-sm text-yellow-400 font-bold">90%</div>
+        </div>
+
+        <!-- Skill 3 -->
+        <div class="glass p-6 rounded-2xl text-center group hover:scale-105 transition-transform">
+          <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 flex items-center justify-center mb-4 group-hover:from-cyan-500/30 group-hover:to-cyan-600/30 transition-all">
+            <i class="fab fa-css3-alt text-4xl text-cyan-500"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Tailwind & SCSS</h3>
+          <p class="text-text-muted text-sm mb-4">Utility-first, Responsive, BEM, Mixins, Variables</p>
+          <div class="w-full bg-dark-card rounded-full h-2">
+            <div class="h-2 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full w-[95%]"></div>
+          </div>
+          <div class="text-right mt-2 text-sm text-cyan-400 font-bold">95%</div>
+        </div>
+
+        <!-- Skill 4 -->
+        <div class="glass p-6 rounded-2xl text-center group hover:scale-105 transition-transform">
+          <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center mb-4 group-hover:from-purple-500/30 group-hover:to-purple-600/30 transition-all">
+            <i class="fab fa-react text-4xl text-purple-500"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Bootstrap</h3>
+          <p class="text-text-muted text-sm mb-4">STYLE, SCSS, JS, PYTHON, HTMgit</p>
+          <div class="w-full bg-dark-card rounded-full h-2">
+            <div class="h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full w-[85%]"></div>
+          </div>
+          <div class="text-right mt-2 text-sm text-purple-400 font-bold">85%</div>
+        </div>
+      </div>
+
+      <!-- Additional Skills -->
+      <div class="mt-12 glass p-8 rounded-2xl">
+        <h3 class="text-2xl font-bold mb-6 text-center">Qo'shimcha Texnologiyalar</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div class="text-center p-4 rounded-xl bg-dark-card/50 hover:bg-primary/10 transition-colors">
+            <i class="fab fa-bootstrap text-3xl text-purple-500 mb-2"></i>
+            <div class="text-sm font-medium">Bootstrap 5</div>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-dark-card/50 hover:bg-green-500/10 transition-colors">
+            <i class="fab fa-git-alt text-3xl text-orange-500 mb-2"></i>
+            <div class="text-sm font-medium">Git & GitHub</div>
+          </div>
+
+          <div class="text-center p-4 rounded-xl bg-dark-card/50 hover:bg-cyan-500/10 transition-colors">
+            <i class="fas fa-mobile-alt text-3xl text-green-500 mb-2"></i>
+            <div class="text-sm font-medium">Responsive</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-dark-card/30 py-16">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">Mijozlar Fikrlari</h2>
+        <p class="text-text-muted max-w-2xl mx-auto">Har bir loyiha hamkorlik va ishonch asosida bajariladi</p>
+      </div>
+
+      <div class="swiper testimonialSwiper">
+        <div class="swiper-wrapper">
+          
+          <!-- Testimonial 1 -->
+          <div class="swiper-slide">
+            <div class="glass p-8 rounded-2xl max-w-2xl mx-auto">
+              <div class="flex items-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 p-0.5">
+                  <div class="w-full h-full rounded-full bg-dark flex items-center justify-center">
+                    <span class="text-xl font-bold">AV</span>
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <h4 class="text-xl font-bold">Ali Valiyev</h4>
+                  <p class="text-text-muted">TechPro CEO</p>
+                </div>
+              </div>
+              <div class="text-yellow-400 mb-4">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p class="text-lg italic text-text-muted">
+                "Abduaziz bilan ishlash juda qulay. TechPro loyihasini vaqtida va mukammal bajarib berdi. Kod sifati va dokumentatsiya ajoyib."
+              </p>
+              <div class="mt-6 pt-6 border-t border-white/10">
+                <span class="text-sm px-3 py-1 rounded-full bg-blue-500/20 text-blue-400">Loyiha: TechPro Task Manager</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="swiper-slide">
+            <div class="glass p-8 rounded-2xl max-w-2xl mx-auto">
+              <div class="flex items-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 p-0.5">
+                  <div class="w-full h-full rounded-full bg-dark flex items-center justify-center">
+                    <span class="text-xl font-bold">DX</span>
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <h4 class="text-xl font-bold">Dildora Xolmatova</h4>
+                  <p class="text-text-muted">Marketing Manager</p>
+                </div>
+              </div>
+              <div class="text-yellow-400 mb-4">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p class="text-lg italic text-text-muted">
+                "Modern Landing loyihasi aynan biz kutganday chiqdi. Responsive dizayn, tez yuklanish va SEO optimallashtirish juda yaxshi bajarilgan."
+              </p>
+              <div class="mt-6 pt-6 border-t border-white/10">
+                <span class="text-sm px-3 py-1 rounded-full bg-purple-500/20 text-purple-400">Loyiha: Modern Landing</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3: CREATE X -->
+          <div class="swiper-slide">
+            <div class="glass p-8 rounded-2xl max-w-2xl mx-auto">
+              <div class="flex items-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 p-0.5">
+                  <div class="w-full h-full rounded-full bg-dark flex items-center justify-center">
+                    <span class="text-xl font-bold">SQ</span>
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <h4 class="text-xl font-bold">Sardor Qodirov</h4>
+                  <p class="text-text-muted">Createx Founder</p>
+                </div>
+              </div>
+              <div class="text-yellow-400 mb-4">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p class="text-lg italic text-text-muted">
+                "Createx Online School loyihasi portfolio'ning eng yaxshi ishi. JavaScript interaktivligi, filterlash tizimi va animatsiyalar professional darajada."
+              </p>
+              <div class="mt-6 pt-6 border-t border-white/10">
+                <span class="text-sm px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400">Loyiha: Createx Online School</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="swiper-pagination mt-8"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-16">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">Bog'laning</h2>
+        <p class="text-text-muted max-w-2xl mx-auto">Loyihangiz haqida gaplashamiz. 24 soat ichida javob beraman</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12">
+        <!-- Contact Info -->
+        <div>
+          <div class="glass p-8 rounded-2xl mb-8">
+            <h3 class="text-2xl font-bold mb-6">Aloqa ma'lumotlari</h3>
+            
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mr-4">
+                  <i class="fas fa-envelope text-blue-400"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Email</h4>
+                  <a href="mailto:abduazizsherjonov357@gmail.com" class="text-text-muted hover:text-primary transition-colors">
+                    abduazizsherjonov357@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center mr-4">
+                  <i class="fab fa-telegram text-cyan-400"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Telegram</h4>
+                  <a href="https://t.me/Sherjonov011" target="_blank" class="text-text-muted hover:text-cyan-400 transition-colors">
+                    @Sherjonov011
+                  </a>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mr-4">
+                  <i class="fas fa-clock text-green-400"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Ish vaqti</h4>
+                  <p class="text-text-muted">Dushanba - Juma: 9:00 - 18:00</p>
+                  <p class="text-sm text-text-muted">Javob vaqti: 24 soat ichida</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="glass p-8 rounded-2xl">
+            <h3 class="text-2xl font-bold mb-6">Ijtimoiy tarmoqlar</h3>
+            <div class="flex space-x-4">
+              <a href="https://github.com/Sherjonov" target="_blank" class="w-14 h-14 rounded-xl bg-dark-card flex items-center justify-center hover:bg-primary/20 transition-colors group">
+                <i class="fab fa-github text-2xl group-hover:text-white transition-colors"></i>
+              </a>
+              <a href="https://t.me/Sherjonov011" target="_blank" class="w-14 h-14 rounded-xl bg-dark-card flex items-center justify-center hover:bg-cyan-500/20 transition-colors group">
+                <i class="fab fa-telegram text-2xl group-hover:text-cyan-400 transition-colors"></i>
+              </a>
+              <a href="#" class="w-14 h-14 rounded-xl bg-dark-card flex items-center justify-center hover:bg-blue-500/20 transition-colors group">
+                <i class="fab fa-linkedin text-2xl group-hover:text-blue-400 transition-colors"></i>
+              </a>
+              <a href="#" class="w-14 h-14 rounded-xl bg-dark-card flex items-center justify-center hover:bg-pink-500/20 transition-colors group">
+                <i class="fab fa-instagram text-2xl group-hover:text-pink-400 transition-colors"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="glass p-8 rounded-2xl">
+          <form id="contactForm" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Ismingiz</label>
+              <input type="text" name="name" required 
+                     class="w-full px-4 py-3 rounded-xl bg-dark-card border border-white/10 focus:border-primary/50 focus:outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Email manzilingiz</label>
+              <input type="email" name="email" required 
+                     class="w-full px-4 py-3 rounded-xl bg-dark-card border border-white/10 focus:border-primary/50 focus:outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Loyiha turi</label>
+              <select name="project_type" class="w-full px-4 py-3 rounded-xl bg-dark-card border border-white/10 focus:border-primary/50 focus:outline-none transition-colors">
+                <option value="">Tanlang</option>
+                <option value="landing">Landing Page</option>
+                <option value="webapp">Web Application</option>
+                <option value="ecommerce">E-commerce</option>
+                <option value="portfolio">Portfolio</option>
+                <option value="other">Boshqa</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Xabar</label>
+              <textarea name="message" rows="5" required 
+                        class="w-full px-4 py-3 rounded-xl bg-dark-card border border-white/10 focus:border-primary/50 focus:outline-none transition-colors resize-none"></textarea>
+            </div>
+
+            <div class="flex items-center">
+              <input type="checkbox" id="newsletter" class="w-4 h-4 rounded bg-dark-card border-white/10">
+              <label for="newsletter" class="ml-2 text-sm text-text-muted">
+                Yangiliklar va maxsus takliflar haqida xabardor bo'lishni istayman
+              </label>
+            </div>
+
+            <button type="submit" class="w-full btn-primary py-4 rounded-xl text-lg font-bold">
+              <span id="submitText">Xabarni yuborish</span>
+              <i class="fas fa-paper-plane ml-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Modal -->
+  <div id="projectModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto glass rounded-2xl">
+      <button onclick="closeProjectModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-dark-card flex items-center justify-center hover:bg-primary/20 transition-colors z-10">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div id="modalContent">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-8 border-t border-white/10">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <span class="text-white font-bold">SA</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold">Sherjonov Abduaziz</h3>
+              <p class="text-sm text-text-muted">Premium Frontend Developer</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mb-4 md:mb-0">
+          <p class="text-text-muted">© 2024 Barcha huquqlar himoyalangan</p>
+          <p class="text-sm text-text-muted mt-1">HTML • CSS • JavaScript • Tailwind • SCSS • Bootstrap</p>
+        </div>
+
+        <div>
+          <a href="#home" class="btn-secondary inline-flex items-center">
+            <i class="fas fa-arrow-up mr-2"></i>
+            Yuqoriga
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      once: true
+    });
+
+    // Initialize Swiper
+    const testimonialSwiper = new Swiper('.testimonialSwiper', {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 2,
+        }
+      }
+    });
+
+    // Typed.js Initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      // Hide preloader
+      setTimeout(() => {
+        document.getElementById('preloader').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('preloader').style.display = 'none';
+        }, 500);
+      }, 1500);
+
+      // Typed text
+      new Typed('#typedText', {
+        strings: [
+          'Frontend Developerman',
+          'JavaScript Expertiman',
+          'UI/UX Designer',
+          'Problem Solver'
+        ],
+        typeSpeed: 50,
+        backSpeed: 30,
+        backDelay: 2000,
+        loop: true
+      });
+
+      // Animate stats
+      const counters = document.querySelectorAll('[data-count]');
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-count'));
+        const increment = target / 100;
+        let current = 0;
+        
+        const updateCounter = () => {
+          if (current < target) {
+            current += increment;
+            counter.textContent = Math.floor(current) + '+';
+            setTimeout(updateCounter, 20);
+          } else {
+            counter.textContent = target + '+';
+          }
+        };
+        
+        // Start animation when in viewport
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              updateCounter();
+              observer.unobserve(entry.target);
+            }
+          });
+        });
+        
+        observer.observe(counter);
+      });
+    });
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const theme = localStorage.getItem('theme') || 'dark';
+    
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      // Update icon
+      const icon = themeToggle.querySelector('i');
+      if (newTheme === 'light') {
+        icon.className = 'fas fa-sun text-yellow-400';
+      } else {
+        icon.className = 'fas fa-moon text-yellow-400';
+      }
+    });
+
+    // Mobile Menu
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const closeMobileMenu = document.getElementById('closeMobileMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.remove('hidden');
+      gsap.from(mobileMenu, { opacity: 0, duration: 0.3 });
+    });
+    
+    closeMobileMenu.addEventListener('click', () => {
+      gsap.to(mobileMenu, { opacity: 0, duration: 0.3, onComplete: () => {
+        mobileMenu.classList.add('hidden');
+      }});
+    });
+
+    // Project Filter
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        const filter = button.getAttribute('data-filter');
+        
+        // Filter projects
+        projectCards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-category').includes(filter)) {
+            card.style.display = 'block';
+            gsap.from(card, { opacity: 0, y: 20, duration: 0.5 });
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Project Modal Functions
+    const projectData = {
+      1: {
+        title: "TechPro Task Manager",
+        description: "To'liq funksional vazifa boshqaruv tizimi. Foydalanuvchilar vazifalarni yaratishi, tahrirlashi, o'chirishi va drag & drop orqali kategoriyalar o'rtasida ko'chirishi mumkin.",
+        features: [
+          "Drag & Drop interfeys",
+          "LocalStorage bilan ma'lumotlar saqlash",
+          "Real-time vazifa yangilash",
+          "Responsive dizayn barcha qurilmalarda",
+          "Dark/Light tema",
+          "Vazifa filterlash va qidirish"
+        ],
+        technologies: ["HTML5", "CSS3", "JavaScript", "Tailwind CSS", "LocalStorage API", "Drag & Drop API"],
+        demo: "https://techprosite1.netlify.app/",
+        github: "#",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop"
+      },
+      2: {
+        title: "Modern Landing Page",
+        description: "Zamonaviy marketing landing page. AOS animatsiyalar, smooth scroll navigation va mukammal responsive dizayn.",
+        features: [
+          "AOS.js animatsiyalar",
+          "Smooth scroll navigation",
+          "SEO optimallashtirilgan",
+          "100% PageSpeed ball",
+          "Cross-browser mosligi",
+          "Contact form bilan bog'lanish"
+        ],
+        technologies: ["HTML5", "CSS3", "JavaScript", "AOS.js", "Font Awesome", "Google Fonts"],
+        demo: "https://malumotli-site.netlify.app/",
+        github: "#",
+        image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop"
+      },
+      3: {
+        title: "Createx Online School",
+        description: "Professional online kurslar platformasi. Foydalanuvchilar kurslarni kategoriya bo'yicha filterlaydi, izlaydi va 'Load More' funksiyasi orqali ko'proq yuklaydi. Modal windows orqali kurs tafsilotlarini ko'rish va konsultatsiyaga yozilish imkoniyati.",
+        features: [
+          "Kurslarni kategoriya bo'yicha filterlash",
+          "Real-time qidiruv tizimi",
+          "Intersection Observer animatsiyalar",
+          "Dynamic 'Load More' funksiyasi",
+          "Modal windows konsultatsiya uchun",
+          "Newsletter subscription",
+          "Responsive barcha ekran o'lchamlarida",
+          "Netlify deployment"
+        ],
+        technologies: ["HTML5", "CSS3", "Vanilla JavaScript", "Intersection Observer", "Debounce Search", "Modal Windows", "Netlify Hosting"],
+        demo: "https://httpsmyportpolionetlifyapp.netlify.app/",
+        github: "#",
+        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop"
+      },
+      4: {
+        title: "ShopDash E-commerce Dashboard",
+        description: "Online do'kon uchun to'liq admin paneli. Mahsulotlar boshqaruvi, buyurtmalar monitoringi va mijozlar boshqaruvi.",
+        features: [
+          "Mahsulotlar CRUD operatsiyalari",
+          "Buyurtmalar monitoringi",
+          "Foydalanuvchilar boshqaruvi",
+          "Chart.js bilan statistikalar",
+          "Real-time notifications",
+          "Export to PDF/Excel"
+        ],
+        technologies: ["React", "TypeScript", "Tailwind CSS", "Chart.js", "React Router", "Redux Toolkit"],
+        demo: "#",
+        github: "#",
+        image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&auto=format&fit=crop"
+      }
+    };
+
+    function openProjectModal(projectId) {
+      const project = projectData[projectId];
+      if (!project) return;
+      
+      const modal = document.getElementById('projectModal');
+      const content = document.getElementById('modalContent');
+      
+      content.innerHTML = `
+        <div class="p-8">
+          <div class="relative h-64 md:h-80 rounded-xl overflow-hidden mb-8">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <h2 class="text-4xl md:text-5xl font-bold text-center">${project.title}</h2>
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="md:col-span-2">
+              <h3 class="text-2xl font-bold mb-4">Loyiha haqida</h3>
+              <p class="text-text-muted mb-6">${project.description}</p>
+              
+              <h4 class="text-xl font-bold mb-4">Xususiyatlar</h4>
+              <ul class="space-y-3 mb-8">
+                ${project.features.map(feature => `
+                  <li class="flex items-center">
+                    <i class="fas fa-check text-green-400 mr-3"></i>
+                    <span>${feature}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+            
+            <div>
+              <div class="glass p-6 rounded-xl mb-6">
+                <h4 class="text-xl font-bold mb-4">Texnologiyalar</h4>
+                <div class="flex flex-wrap gap-2">
+                  ${project.technologies.map(tech => `
+                    <span class="px-3 py-1 rounded-full bg-dark-card text-sm">${tech}</span>
+                  `).join('')}
+                </div>
+              </div>
+              
+              <div class="space-y-4">
+                <a href="${project.demo}" target="_blank" class="btn-primary w-full flex items-center justify-center py-3">
+                  <i class="fas fa-external-link-alt mr-2"></i>
+                  Live Demo'ni ko'rish
+                </a>
+                
+                <button onclick="closeProjectModal()" class="w-full py-3 rounded-xl border border-white/10 hover:bg-white/5 transition-colors">
+                  Yopish
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      modal.classList.remove('hidden');
+      gsap.from(modal, { opacity: 0, scale: 0.9, duration: 0.3 });
+    }
+
+    function closeProjectModal() {
+      const modal = document.getElementById('projectModal');
+      gsap.to(modal, {
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.3,
+        onComplete: () => {
+          modal.classList.add('hidden');
+        }
+      });
+    }
+
+    // Contact Form
+    const contactForm = document.getElementById('contactForm');
+    const submitText = document.getElementById('submitText');
+    
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const submitButton = this.querySelector('button[type="submit"]');
+      
+      // Show loading state
+      submitButton.disabled = true;
+      submitText.textContent = "Yuborilmoqda...";
+      
+      // Simulate API call
+      setTimeout(() => {
+        // Show success message
+        alert('✅ Rahmat! Xabaringiz qabul qilindi. 24 soat ichida javob beraman.');
+        
+        // Reset form
+        contactForm.reset();
+        
+        // Reset button state
+        submitButton.disabled = false;
+        submitText.textContent = "Xabarni yuborish";
+      }, 2000);
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 100) {
+        navbar.classList.add('glass');
+        navbar.style.backdropFilter = 'blur(10px)';
+      } else {
+        navbar.classList.remove('glass');
+        navbar.style.backdropFilter = 'none';
+      }
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          
+          // Close mobile menu if open
+          if (window.innerWidth < 768) {
+            mobileMenu.classList.add('hidden');
+          }
+        }
+      });
+    });
+
+    // Initialize GSAP animations
+    gsap.registerEffect({
+      name: "fadeInUp",
+      effect: (targets, config) => {
+        return gsap.from(targets, {
+          y: 50,
+          opacity: 0,
+          duration: config.duration,
+          ease: "power3.out",
+          stagger: config.stagger
+        });
+      },
+      defaults: { duration: 1, stagger: 0.2 }
+    });
+
+    // Animate elements on load
+    window.addEventListener('load', () => {
+      gsap.effects.fadeInUp(".project-card", { duration: 0.8, stagger: 0.1 });
+      
+      // Floating animation for glass elements
+      gsap.to(".glass", {
+        y: -10,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        stagger: 0.1
+      });
+    });
+  </script>
+</body>
+</html>
