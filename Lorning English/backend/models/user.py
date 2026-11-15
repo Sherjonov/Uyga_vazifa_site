@@ -18,7 +18,7 @@ class User(Base):
     email: Mapped[Optional[str]] = mapped_column(String(255), unique=True, index=True, nullable=True)
     phone: Mapped[Optional[str]] = mapped_column(String(20), unique=True, index=True, nullable=True)
     password_hash: Mapped[str] = mapped_column(String(255))
-    role: Mapped[str] = mapped_column(String(20), default="student", index=True)  # student | teacher | admin
+    role: Mapped[str] = mapped_column(String(20), default="student", index=True)  # student | teacher
     track: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, index=True)  # school | university | circle
     language: Mapped[str] = mapped_column(String(2), default="uz")
     theme: Mapped[str] = mapped_column(String(10), default="light")

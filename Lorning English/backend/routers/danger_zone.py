@@ -12,7 +12,7 @@ router = APIRouter(prefix="/danger-zone", tags=["danger-zone"])
 
 @router.get("")
 def danger_zone(group_id: Optional[int] = None, db: Session = Depends(get_db),
-                user: User = Depends(require_role("teacher", "admin"))):
+                user: User = Depends(require_role("teacher"))):
     """Ko'rsatkichi past o'quvchilarni aniqlaydi va xavfga ilk kirishda ota-onasiga xabar beradi."""
     if group_id:
         get_group_for_teacher(db, group_id, user)

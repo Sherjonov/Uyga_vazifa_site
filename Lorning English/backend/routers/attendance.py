@@ -57,7 +57,7 @@ def my_attendance(db: Session = Depends(get_db), user: User = Depends(require_ro
 
 @router.get("/{group_id}")
 def get_attendance(group_id: int, date: Optional[date_type] = None, db: Session = Depends(get_db),
-                   user: User = Depends(require_role("teacher", "admin"))):
+                   user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, group_id, user)
     day = date or today()
     students = db.scalars(
@@ -86,7 +86,7 @@ def get_attendance(group_id: int, date: Optional[date_type] = None, db: Session 
 
 
 @router.get("/{group_id}/dates")
-def attendance_dates(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def attendance_dates(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, group_id, user)
     dates = db.scalars(
         select(Attendance.date).where(Attendance.group_id == group_id).distinct().order_by(Attendance.date.desc()).limit(60)
@@ -95,7 +95,7 @@ def attendance_dates(group_id: int, db: Session = Depends(get_db), user: User = 
 
 
 @router.put("")
-def set_attendance(data: AttendanceIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def set_attendance(data: AttendanceIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     group = get_group_for_teacher(db, data.group_id, user)
     if not is_member(db, group.id, data.student_id):
         raise AppError(400, "not_in_group")
@@ -107,7 +107,7 @@ def set_attendance(data: AttendanceIn, db: Session = Depends(get_db), user: User
 
 
 @router.put("/bulk")
-def set_attendance_bulk(data: AttendanceBulkIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def set_attendance_bulk(data: AttendanceBulkIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     group = get_group_for_teacher(db, data.group_id, user)
     ids = db.scalars(select(GroupMember.student_id).where(GroupMember.group_id == group.id)).all()
     for sid in ids:

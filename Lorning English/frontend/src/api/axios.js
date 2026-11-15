@@ -30,9 +30,6 @@ api.interceptors.response.use(
       localStorage.removeItem('aedu_token');
       if (!window.location.pathname.startsWith('/login')) window.location.href = '/login';
     }
-    if (err.response?.status === 402 && !window.location.pathname.startsWith('/teacher/subscription')) {
-      window.location.href = '/teacher/subscription';
-    }
     return Promise.reject(err);
   }
 );

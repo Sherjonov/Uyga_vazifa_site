@@ -39,6 +39,7 @@ const RetakeRequests = lazy(() => import('./pages/teacher/RetakeRequests'));
 const Review = lazy(() => import('./pages/teacher/Review'));
 const TRating = lazy(() => import('./pages/teacher/Rating'));
 const TMessages = lazy(() => import('./pages/teacher/Messages'));
+const TParents = lazy(() => import('./pages/teacher/ParentMessages'));
 const Help = lazy(() => import('./pages/teacher/Help'));
 
 /** Faqat tizimga kirmagan foydalanuvchilar uchun sahifalar */
@@ -117,6 +118,7 @@ export default function App() {
           <Route path="review" element={<Review />} />
           <Route path="rating" element={<TRating />} />
           <Route path="messages" element={<TMessages />} />
+          <Route path="parents" element={<TParents />} />
           <Route path="help" element={<Help />} />
         </Route>
 

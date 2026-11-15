@@ -54,6 +54,8 @@ class Settings:
     AI_MODEL: str = os.getenv("AI_MODEL", "").strip()
     # Saytda ko'rsatiladigan qo'shimcha modellar. Format: model yoki provayder:model
     AI_MODELS: str = os.getenv("AI_MODELS", "").strip()
+    # Kitob lug'atini tarjima qilish uchun tez (o'ylamaydigan) model: AI_MODELS ichidan shu so'z bo'yicha tanlanadi
+    AI_TRANSLATE_MODEL: str = os.getenv("AI_TRANSLATE_MODEL", "gpt-oss").strip()
     SMS_PROVIDER: str = os.getenv("SMS_PROVIDER", "").strip().lower()
     SMS_API_KEY: str = os.getenv("SMS_API_KEY", "")
     SMS_API_URL: str = os.getenv("SMS_API_URL", "")

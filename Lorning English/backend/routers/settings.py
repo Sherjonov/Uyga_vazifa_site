@@ -24,7 +24,7 @@ def _s_out(s) -> dict:
 
 
 @router.get("/teacher")
-def get_teacher_settings(db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def get_teacher_settings(db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     s = scoring.get_teacher_settings(db, user.id)
     db.commit()
     return _s_out(s)
@@ -32,7 +32,7 @@ def get_teacher_settings(db: Session = Depends(get_db), user: User = Depends(req
 
 @router.put("/teacher")
 def update_teacher_settings(data: TeacherSettingsIn, db: Session = Depends(get_db),
-                            user: User = Depends(require_role("teacher", "admin"))):
+                            user: User = Depends(require_role("teacher"))):
     s = scoring.get_teacher_settings(db, user.id)
     for k, v in data.model_dump().items():
         setattr(s, k, v)

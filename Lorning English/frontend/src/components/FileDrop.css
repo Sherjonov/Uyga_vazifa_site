@@ -1,0 +1,11 @@
+.filedrop { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border: 2px dashed var(--border-strong); border-radius: 18px; background: var(--surface-2); color: var(--text-2); cursor: pointer; transition: border-color .2s, background .2s, transform .2s; outline: none; }
+.filedrop:hover, .filedrop:focus-visible, .filedrop.over { border-color: var(--primary); background: var(--primary-soft); transform: translateY(-1px); }
+.filedrop.has-file { border-style: solid; border-color: var(--primary); }
+.filedrop.disabled { opacity: .6; cursor: not-allowed; }
+.filedrop-ico { flex: none; width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; color: #fff; background: var(--grad); box-shadow: 0 8px 20px rgba(91, 91, 240, .35); }
+.filedrop-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.filedrop-body strong { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Eski .drop maydonlari ham shu ko'rinishda */
+.drop { border-radius: 20px !important; padding: 34px 24px !important; }
+.drop svg { transition: transform .25s; }
+.drop:hover svg, .drop.over svg { transform: translateY(-4px) scale(1.08); }

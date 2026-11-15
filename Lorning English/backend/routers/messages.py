@@ -15,8 +15,6 @@ router = APIRouter(prefix="/messages", tags=["messages"])
 
 def _related(db: Session, a: User, b: User) -> bool:
     """O'qituvchi va o'quvchi bir guruhda bo'lsagina yozisha oladi."""
-    if a.role == "admin" or b.role == "admin":
-        return False
     teacher, student = (a, b) if a.role == "teacher" else (b, a)
     if teacher.role != "teacher" or student.role != "student":
         return False

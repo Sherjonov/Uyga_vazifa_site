@@ -97,7 +97,7 @@ def _normalize_tracks(conn, existing: set[str]) -> None:
     if "users" in existing:
         conn.execute(text("UPDATE users SET track = 'english' WHERE track IN ('school', 'university', 'circle')"))
     if "groups" in existing:
-        conn.execute(text("UPDATE groups SET kind = 'english' WHERE kind IN ('school', 'university', 'circle')"))
+        conn.execute(text(f"UPDATE {conn.dialect.identifier_preparer.quote('groups')} SET kind = 'english' WHERE kind IN ('school', 'university', 'circle')"))
 
 
 def _normalize_penalty(conn, existing: set[str]) -> None:

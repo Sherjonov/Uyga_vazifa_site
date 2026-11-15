@@ -37,7 +37,7 @@ class ClaimIn(BaseModel):
 # ---------- O'qituvchi: jadvalga faqat ism kiritadi ----------
 
 @router.post("")
-def add_names(data: RosterIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def add_names(data: RosterIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     group = get_group_for_teacher(db, data.group_id, user)
     taken = {n.lower() for n in db.scalars(
         select(User.name).join(GroupMember, GroupMember.student_id == User.id).where(GroupMember.group_id == group.id)).all()}
@@ -60,7 +60,7 @@ def add_names(data: RosterIn, db: Session = Depends(get_db), user: User = Depend
 
 @router.put("/{student_id}")
 def rename_name(student_id: int, data: RenameIn, db: Session = Depends(get_db),
-                user: User = Depends(require_role("teacher", "admin"))):
+                user: User = Depends(require_role("teacher"))):
     ph = db.get(User, student_id)
     if not ph or ph.claimed or ph.role != "student":
         raise AppError(404, "not_found")
@@ -76,7 +76,7 @@ def rename_name(student_id: int, data: RenameIn, db: Session = Depends(get_db),
 
 @router.put("/{student_id}/password")
 def reset_student_password(student_id: int, data: PasswordResetIn, db: Session = Depends(get_db),
-                           user: User = Depends(require_role("teacher", "admin"))):
+                           user: User = Depends(require_role("teacher"))):
     student = db.get(User, student_id)
     if not student or student.role != "student" or not student.claimed:
         raise AppError(404, "not_found")

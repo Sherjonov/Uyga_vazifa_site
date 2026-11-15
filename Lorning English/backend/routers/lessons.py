@@ -38,7 +38,7 @@ def create_lesson(
     title: str = Form(..., min_length=1, max_length=200),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("teacher", "admin")),
+    user: User = Depends(require_role("teacher")),
 ):
     get_group_for_teacher(db, group_id, user)
     pdf_rel = storage.save_upload(file, "pdfs", {".pdf"}, max_mb=50)
@@ -92,7 +92,7 @@ def get_lesson(lesson_id: int, db: Session = Depends(get_db), user: User = Depen
 
 
 @router.delete("/{lesson_id}")
-def delete_lesson(lesson_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def delete_lesson(lesson_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     l = db.get(Lesson, lesson_id)
     if not l:
         raise AppError(404, "not_found")

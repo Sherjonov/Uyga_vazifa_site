@@ -9,6 +9,8 @@ python-multipart>=0.0.9
 PyMuPDF>=1.24
 httpx>=0.26
 python-dotenv>=1.0
+pymysql>=1.1
+cryptography>=42
 # Boshqa baza kerak bo'lsa (.env dagi DB_TYPE):
 #   PostgreSQL: python -m pip install psycopg2-binary
 #   MySQL:      python -m pip install pymysql

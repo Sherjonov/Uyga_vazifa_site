@@ -22,7 +22,7 @@ def _column_for_teacher(db: Session, column_id: int, user: User) -> GridColumn:
 
 
 @router.get("/{group_id}")
-def get_grid(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def get_grid(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     g = get_group_for_teacher(db, group_id, user)
     cols = db.scalars(select(GridColumn).where(GridColumn.group_id == group_id).order_by(GridColumn.position, GridColumn.id)).all()
     students = db.scalars(
@@ -52,7 +52,7 @@ def my_grades(group_id: int, db: Session = Depends(get_db), user: User = Depends
 
 
 @router.post("/{group_id}/columns")
-def add_column(group_id: int, data: ColumnIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def add_column(group_id: int, data: ColumnIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, group_id, user)
     last = db.scalar(select(func.coalesce(func.max(GridColumn.position), 0)).where(GridColumn.group_id == group_id))
     col = GridColumn(group_id=group_id, title=data.title.strip(), position=(last or 0) + 1)
@@ -62,7 +62,7 @@ def add_column(group_id: int, data: ColumnIn, db: Session = Depends(get_db), use
 
 
 @router.put("/columns/{column_id}")
-def rename_column(column_id: int, data: ColumnIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def rename_column(column_id: int, data: ColumnIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     col = _column_for_teacher(db, column_id, user)
     col.title = data.title.strip()
     db.commit()
@@ -70,7 +70,7 @@ def rename_column(column_id: int, data: ColumnIn, db: Session = Depends(get_db),
 
 
 @router.delete("/columns/{column_id}")
-def delete_column(column_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def delete_column(column_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     col = _column_for_teacher(db, column_id, user)
     affected = list(db.scalars(select(GridCell.student_id).where(GridCell.column_id == col.id)).all())
     db.delete(col)
@@ -82,7 +82,7 @@ def delete_column(column_id: int, db: Session = Depends(get_db), user: User = De
 
 
 @router.put("/cells")
-def set_cell(data: CellIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def set_cell(data: CellIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     col = _column_for_teacher(db, data.column_id, user)
     if not is_member(db, col.group_id, data.student_id):
         raise AppError(400, "not_in_group")

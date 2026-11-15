@@ -51,7 +51,7 @@ def my_requests(db: Session = Depends(get_db), user: User = Depends(require_role
 
 @router.get("")
 def list_requests(status: Optional[str] = None, test_id: Optional[int] = None, db: Session = Depends(get_db),
-                  user: User = Depends(require_role("teacher", "admin"))):
+                  user: User = Depends(require_role("teacher"))):
     stmt = (select(RetakeRequest, Test.title, User.name)
             .join(Test, Test.id == RetakeRequest.test_id).join(User, User.id == RetakeRequest.student_id)
             .where(Test.group_id.in_(teacher_group_ids(db, user) or [0])))
@@ -79,10 +79,10 @@ def _resolve(db: Session, request_id: int, user: User, new_status: str) -> dict:
 
 
 @router.post("/{request_id}/approve")
-def approve(request_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def approve(request_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     return _resolve(db, request_id, user, "approved")
 
 
 @router.post("/{request_id}/reject")
-def reject(request_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def reject(request_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     return _resolve(db, request_id, user, "rejected")

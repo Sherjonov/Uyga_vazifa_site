@@ -32,6 +32,9 @@ export default function ParentMessages() {
 
   const cols = [
     { key: 'name', title: t('students.student'), render: s => <div className="person"><span className="avatar">{initials(s.name)}</span><strong>{s.name}</strong></div> },
+    { key: 'bot', title: t('parents.status2'), width: 150, render: s => s.telegram_parents.length > 0
+      ? <span className="badge badge-success">{t('parents.linked')} ({s.telegram_parents.length})</span>
+      : <span className="badge badge-warning">{t('parents.notLinked')}</span> },
     { key: 'c', title: t('parents.contact'), render: s => (
       <div className="stack" style={{ gap: 6 }}>
         {s.telegram_parents.map(p => (
@@ -73,6 +76,9 @@ export default function ParentMessages() {
             <a className="btn btn-primary btn-sm" href={bot.url} target="_blank" rel="noreferrer"><ExternalLink size={14} /> {t('parents.botOpen')}</a>
           </div>}
         </div>
+        {students && students.length > 0 && <p className="muted" style={{ margin: 0 }}>{t('parents.summary', {
+          linked: students.filter(s => s.telegram_parents.length > 0).length,
+          unlinked: students.filter(s => s.telegram_parents.length === 0).length })}</p>}
         <DataTable columns={cols} rows={students || []} loading={students === null} empty={<Empty icon={PhoneCall} title={t('students.empty')} />} />
         <div><h3 style={{ marginBottom: 12 }}>{t('parents.history')}</h3>
           <DataTable columns={hcols} rows={history || []} loading={history === null} empty={<Empty title={t('parents.noHistory')} />} /></div>

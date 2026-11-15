@@ -23,7 +23,7 @@ def g_out(g: Group, count: int, teacher_name: Optional[str] = None) -> dict:
 
 
 @router.post("")
-def create_group(data: GroupIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def create_group(data: GroupIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     g = Group(name=data.name.strip(), kind=data.kind, teacher_id=user.id)
     db.add(g)
     db.commit()
@@ -47,7 +47,7 @@ def search_students(
     q: str = Query(min_length=2, max_length=60),
     group_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("teacher", "admin")),
+    user: User = Depends(require_role("teacher")),
 ):
     q = q.strip()
     conds = [User.name.ilike(f"%{q}%"), User.email.ilike(f"%{q}%")]
@@ -67,7 +67,7 @@ def search_students(
 
 @router.put("/{group_id}")
 def rename_group(group_id: int, data: GroupRename, db: Session = Depends(get_db),
-                 user: User = Depends(require_role("teacher", "admin"))):
+                 user: User = Depends(require_role("teacher"))):
     g = get_group_for_teacher(db, group_id, user)
     g.name = data.name.strip()
     db.commit()
@@ -75,7 +75,7 @@ def rename_group(group_id: int, data: GroupRename, db: Session = Depends(get_db)
 
 
 @router.delete("/{group_id}")
-def delete_group(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def delete_group(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     g = get_group_for_teacher(db, group_id, user)
     ghosts = list(db.scalars(select(User).join(GroupMember, GroupMember.student_id == User.id)
                              .where(GroupMember.group_id == group_id, User.claimed.is_(False))).all())
@@ -88,7 +88,7 @@ def delete_group(group_id: int, db: Session = Depends(get_db), user: User = Depe
 
 
 @router.get("/{group_id}/members")
-def list_members(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def list_members(group_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, group_id, user)
     students = db.scalars(
         select(User).join(GroupMember, GroupMember.student_id == User.id)
@@ -106,7 +106,7 @@ def list_members(group_id: int, db: Session = Depends(get_db), user: User = Depe
 
 @router.post("/{group_id}/members")
 def add_member(group_id: int, data: MemberIn, db: Session = Depends(get_db),
-               user: User = Depends(require_role("teacher", "admin"))):
+               user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, group_id, user)
     student = db.get(User, data.student_id)
     if not student or student.role != "student":
@@ -121,7 +121,7 @@ def add_member(group_id: int, data: MemberIn, db: Session = Depends(get_db),
 
 @router.delete("/{group_id}/members/{student_id}")
 def remove_member(group_id: int, student_id: int, db: Session = Depends(get_db),
-                  user: User = Depends(require_role("teacher", "admin"))):
+                  user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, group_id, user)
     m = db.scalar(select(GroupMember).where(GroupMember.group_id == group_id, GroupMember.student_id == student_id))
     if not m:

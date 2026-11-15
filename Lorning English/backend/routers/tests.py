@@ -56,7 +56,7 @@ def _replace_questions(db: Session, t: Test, questions) -> None:
 # ---------- O'qituvchi ----------
 
 @router.post("/parse")
-def parse_pdf(file: UploadFile = File(...), user: User = Depends(require_role("teacher", "admin"))):
+def parse_pdf(file: UploadFile = File(...), user: User = Depends(require_role("teacher"))):
     """PDF dan savollarni ajratadi (saqlamaydi). O'qituvchi ko'rib chiqib tahrirlaydi."""
     rel = storage.save_upload(file, "pdfs", {".pdf"}, max_mb=30)
     try:
@@ -74,7 +74,7 @@ def parse_pdf(file: UploadFile = File(...), user: User = Depends(require_role("t
 
 
 @router.post("/generate")
-def generate_test(data: TestGenerateIn, user: User = Depends(require_role("teacher", "admin"))):
+def generate_test(data: TestGenerateIn, user: User = Depends(require_role("teacher"))):
     """AI mavzu bo'yicha aynan `count` ta savol va har birida `options_count` ta variant tuzadi (saqlanmaydi: o'qituvchi tahrirlaydi)."""
     if not ai_service.is_configured():
         raise AppError(503, "ai_not_configured")
@@ -87,7 +87,7 @@ def generate_test(data: TestGenerateIn, user: User = Depends(require_role("teach
 
 
 @router.post("/generate/replace")
-def replace_question(data: TestReplaceIn, user: User = Depends(require_role("teacher", "admin"))):
+def replace_question(data: TestReplaceIn, user: User = Depends(require_role("teacher"))):
     """Bitta savolni yangisiga almashtirish (oldingilari takrorlanmaydi)."""
     if not ai_service.is_configured():
         raise AppError(503, "ai_not_configured")
@@ -100,7 +100,7 @@ def replace_question(data: TestReplaceIn, user: User = Depends(require_role("tea
 
 
 @router.post("")
-def create_test(data: TestCreate, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def create_test(data: TestCreate, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, data.group_id, user)
     t = Test(group_id=data.group_id, teacher_id=user.id, title=data.title.strip(),
              duration_minutes=data.duration_minutes, is_published=data.is_published)
@@ -113,7 +113,7 @@ def create_test(data: TestCreate, db: Session = Depends(get_db), user: User = De
 
 
 @router.get("")
-def list_tests(group_id: Optional[int] = None, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def list_tests(group_id: Optional[int] = None, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     if group_id:
         get_group_for_teacher(db, group_id, user)
         gids = [group_id]
@@ -274,14 +274,14 @@ def start_attempt(test_id: int, db: Session = Depends(get_db), user: User = Depe
 
 
 @router.get("/{test_id}")
-def get_test(test_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def get_test(test_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     t = _get_test(db, test_id)
     get_group_for_teacher(db, t.group_id, user)
     return _t_out(t, True)
 
 
 @router.put("/{test_id}")
-def update_test(test_id: int, data: TestUpdate, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def update_test(test_id: int, data: TestUpdate, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     t = _get_test(db, test_id)
     get_group_for_teacher(db, t.group_id, user)
     if data.title is not None:
@@ -298,7 +298,7 @@ def update_test(test_id: int, data: TestUpdate, db: Session = Depends(get_db), u
 
 
 @router.delete("/{test_id}")
-def delete_test(test_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def delete_test(test_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     t = _get_test(db, test_id)
     get_group_for_teacher(db, t.group_id, user)
     affected = {a.student_id for a in t.attempts}
@@ -311,7 +311,7 @@ def delete_test(test_id: int, db: Session = Depends(get_db), user: User = Depend
 
 
 @router.get("/{test_id}/results")
-def test_results(test_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def test_results(test_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     t = _get_test(db, test_id)
     get_group_for_teacher(db, t.group_id, user)
     students = db.scalars(select(User).join(GroupMember, GroupMember.student_id == User.id)

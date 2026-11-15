@@ -90,7 +90,7 @@ def create_assignment(
     max_score: float = Form(10, gt=0, le=1000),
     file: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("teacher", "admin")),
+    user: User = Depends(require_role("teacher")),
 ):
     get_group_for_teacher(db, group_id, user)
     due = parse_dt(due_at)
@@ -101,6 +101,7 @@ def create_assignment(
                    file_path=path, due_at=due, max_score=max_score)
     db.add(a)
     db.commit()
+    telegram_notify.notify_new_assignment_async(a.id)  # o'quvchi va ota-onaga "yangi vazifa" xabari
     return _a_out(a)
 
 
@@ -135,7 +136,7 @@ def my_assignments(kind: str = "homework", status: str = "pending", db: Session 
 
 @router.put("/submissions/{submission_id}/review")
 def review_submission(submission_id: int, data: ReviewIn, db: Session = Depends(get_db),
-                      user: User = Depends(require_role("teacher", "admin"))):
+                      user: User = Depends(require_role("teacher"))):
     s = db.get(Submission, submission_id)
     if not s or not s.submitted_at:
         raise AppError(404, "not_found")
@@ -242,7 +243,7 @@ def _similarity_percent(left: str, right: str) -> Optional[tuple[int, str]]:
 
 @router.post("/submissions/{submission_id}/similarity-check")
 def check_submission_similarity(submission_id: int, db: Session = Depends(get_db),
-                                user: User = Depends(require_role("teacher", "admin"))):
+                                user: User = Depends(require_role("teacher"))):
     submission = db.get(Submission, submission_id)
     if not submission or not submission.submitted_at:
         raise AppError(404, "not_found")
@@ -282,7 +283,7 @@ def check_submission_similarity(submission_id: int, db: Session = Depends(get_db
 
 @router.post("/submissions/{submission_id}/ai-check")
 def check_submission_ai(submission_id: int, db: Session = Depends(get_db),
-                        user: User = Depends(require_role("teacher", "admin"))):
+                        user: User = Depends(require_role("teacher"))):
     submission = db.get(Submission, submission_id)
     if not submission or not submission.submitted_at:
         raise AppError(404, "not_found")
@@ -369,7 +370,7 @@ def check_submission_ai(submission_id: int, db: Session = Depends(get_db),
 
 @router.get("")
 def list_assignments(group_id: Optional[int] = None, kind: Optional[str] = None, db: Session = Depends(get_db),
-                     user: User = Depends(require_role("teacher", "admin"))):
+                     user: User = Depends(require_role("teacher"))):
     if group_id:
         get_group_for_teacher(db, group_id, user)
         gids = [group_id]
@@ -407,7 +408,7 @@ def get_assignment(assignment_id: int, db: Session = Depends(get_db), user: User
 
 
 @router.delete("/{assignment_id}")
-def delete_assignment(assignment_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def delete_assignment(assignment_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     a = _get_assignment(db, assignment_id)
     get_group_for_teacher(db, a.group_id, user)
     affected = [s.student_id for s in a.submissions]
@@ -424,7 +425,7 @@ def delete_assignment(assignment_id: int, db: Session = Depends(get_db), user: U
 
 
 @router.get("/{assignment_id}/submissions")
-def list_submissions(assignment_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def list_submissions(assignment_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     a = _get_assignment(db, assignment_id)
     get_group_for_teacher(db, a.group_id, user)
     students = db.scalars(

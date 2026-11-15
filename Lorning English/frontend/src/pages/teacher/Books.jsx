@@ -1,4 +1,5 @@
-﻿import { useCallback, useEffect, useRef, useState } from 'react';
+﻿import FileDrop from '../../components/FileDrop';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Eye, ListChecks, Lock, RefreshCw, Trash2, Unlock, UploadCloud, Users } from 'lucide-react';
 import PageHeader from '../../components/PageHeader';
@@ -93,7 +94,7 @@ export default function Books() {
             <form className="card stack" onSubmit={upload}>
               <h3>{type === 'lesson' ? t('book.uploadLesson') : t('book.uploadVocab')}</h3>
               <div className="field"><label>{t('assign.title')}</label><input className="input" value={title} maxLength={200} onChange={e => setTitle(e.target.value)} /></div>
-              <div className="field"><label>PDF</label><input ref={input} className="input" type="file" accept="application/pdf,.pdf" onChange={e => setFile(e.target.files[0] || null)} /></div>
+              <div className="field"><label>PDF</label><FileDrop file={file} onChange={setFile} hint={t('lessons.pdfHint')} /></div>
               {type === 'vocab' && <p className="hint">{t('book.vocabHint')}</p>}
               <button className="btn btn-primary" disabled={busy}>{busy ? <Spinner size={16} /> : <UploadCloud size={16} />} {t('common.upload')}</button>
             </form>

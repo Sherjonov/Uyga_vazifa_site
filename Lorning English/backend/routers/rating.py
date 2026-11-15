@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from deps import (get_db, get_current_user, get_group_for_teacher, require_role,
+from deps import (get_db, get_current_user, get_group_for_teacher, get_group_for_member, require_role,
                   is_member, teacher_has_student)
 from messages import AppError
 from models.assignment import Assignment, Submission
@@ -172,7 +172,7 @@ def my_score_history(db: Session = Depends(get_db), user: User = Depends(require
 
 @router.get("/students/{student_id}/history")
 def student_score_history(student_id: int, group_id: int, db: Session = Depends(get_db),
-                          user: User = Depends(require_role("teacher", "admin"))):
+                          user: User = Depends(require_role("teacher"))):
     get_group_for_teacher(db, group_id, user)
     if not teacher_has_student(db, user, student_id) or not is_member(db, group_id, student_id):
         raise AppError(404, "not_found")

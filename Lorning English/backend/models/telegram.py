@@ -23,7 +23,7 @@ class TelegramAccount(Base):
     # Ota-ona hozir qaysi farzandni ko'rayotgani
     active_student_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     state: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
-    state_data: Mapped[dict] = mapped_column(JSON, default=dict, server_default=sql_text("'{}'"))
+    state_data: Mapped[dict] = mapped_column(JSON, default=dict, server_default=sql_text("('{}')"))
     blocked: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())  # bot bloklangan
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)

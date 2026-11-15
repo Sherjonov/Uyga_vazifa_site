@@ -39,7 +39,7 @@ class Submission(Base):
     is_late: Mapped[bool] = mapped_column(Boolean, default=False, server_default=sql_text("0"))  # muddatdan keyin topshirilgan
     resubmit_count: Mapped[int] = mapped_column(Integer, default=0, server_default=sql_text("0"))
     penalty_points: Mapped[float] = mapped_column(Float, default=0.0, server_default=sql_text("0"))  # qayta yuborish jarimalari
-    extra_files: Mapped[list] = mapped_column(JSON, default=list, server_default=sql_text("'[]'"))
+    extra_files: Mapped[list] = mapped_column(JSON, default=list, server_default=sql_text("('[]')"))
     started_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     submitted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True, index=True)
     score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)

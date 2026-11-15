@@ -34,7 +34,7 @@ from messages import AppError, lang_from_request, t  # noqa: E402
 from routers import (  # noqa: E402
     auth, onboarding, groups, grid, attendance, assignments, tests, retake, rating,
     danger_zone, ai_chat, settings as settings_router, roster, books, vocab, translate,
-    telegram as telegram_router, parents,
+    telegram as telegram_router, parents, badges,
 )
 from routers import messages as messages_router  # noqa: E402
 from services import parent_alerts, telegram_bot  # noqa: E402
@@ -77,7 +77,7 @@ async def validation_handler(request: Request, exc: RequestValidationError):
 
 for r in (auth, onboarding, groups, grid, attendance, assignments, tests, retake, rating,
           danger_zone, ai_chat, messages_router, settings_router, roster, books, vocab, translate,
-          telegram_router, parents):
+          telegram_router, parents, badges):
     app.include_router(r.router, prefix="/api")
 
 

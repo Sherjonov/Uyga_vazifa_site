@@ -1,3 +1,4 @@
+import FileDrop from './FileDrop';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCheck, Plus, Trash2, Users } from 'lucide-react';
@@ -61,7 +62,7 @@ export default function AssignmentForm({ kind }) {
           {!isExtra && <div className="field"><label>{t('assign.due')}</label><input className="input" type="datetime-local" value={f.due} onChange={e => setF({ ...f, due: e.target.value })} /></div>}
           <div className="field"><label>{t('assign.maxScore')}</label><input className="input" type="number" min={1} max={1000} value={f.max} onChange={e => setF({ ...f, max: e.target.value })} /></div>
         </div>
-        <div className="field"><label>{t('assign.file')}</label><input className="input" type="file" onChange={e => setFile(e.target.files[0] || null)} /></div>
+        <div className="field"><label>{t('assign.file')}</label><FileDrop file={file} onChange={setFile} accept="*/*" label={t('assign.file')} hint="PDF, DOC, IMG…" /></div>
         <button className="btn btn-primary" disabled={busy}>{busy ? <Spinner size={16} /> : <Plus size={16} />} {t('common.add')}</button>
       </form>
       <div className="stack">

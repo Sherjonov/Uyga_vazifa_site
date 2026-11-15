@@ -124,7 +124,7 @@ def render_level(ov: dict) -> str:
         level = "⚠️ <b>Past</b> — e'tibor kerak"
     lines = [f"🎓 <b>{name}</b> — bilim darajasi", "", f"Umumiy daraja: {level}"
              + (f" ({num(avg)}%)" if avg is not None else ""), ""]
-    lines.append(f"📝 Testlar: " + (f"o'rtacha <b>{num(ts['avg_percent'])}%</b> ({ts['taken']} ta)" if ts["taken"] else "hali topshirilmagan"))
+    lines.append("📝 Testlar: " + (f"o'rtacha <b>{num(ts['avg_percent'])}%</b> ({ts['taken']} ta)" if ts["taken"] else "hali topshirilmagan"))
     lines.append("🏠 Uyga vazifa: " + (f"<b>{num(hw['points'])}/{num(hw['max_points'])}</b> ball ({num(hw_pct)}%)" if hw_pct is not None
                                        else "hali baholanmagan") + f" · topshirilmagan: <b>{hw['missed']}</b>")
     lines.append("📖 Lug'at: " + (f"<b>{vc['passed']}/{vc['total']}</b> unit ({num(vc_pct)}%)" if vc.get("total") else "hali yo'q"))
@@ -203,10 +203,46 @@ def render_attendance(ov: dict) -> str:
     return "\n".join(lines)
 
 
+MOTIVATION = {
+    "high": ["Ajoyib natija! Shu tempda davom eting, siz zo'rsiz! 🌟", "Barakalla! Mehnatingiz samara berdi. 🚀",
+             "A'lo! Bunday natija faqat tirishqoq o'quvchilarga nasib qiladi. 👏"],
+    "mid": ["Yaxshi natija! Biroz ko'proq mashq qilsangiz, a'loga chiqasiz. 💪", "Yaxshi ketyapsiz! Xatolar ustida ishlang, keyingisi yanada yaxshi bo'ladi. 📈"],
+    "low": ["Xafa bo'lmang, har bir xato — o'rganish imkoni. Keyingi safar albatta yaxshiroq bo'ladi! 🌱",
+            "Bu hali oxiri emas! Mentor izohini o'qib, qayta urinib ko'ring — siz uddalaysiz. 💫"],
+}
+
+
+def motivation(score: float, max_score: float, for_parent: bool = False, salt: int = 0) -> str:
+    pct = score * 100 / max_score if max_score else 0
+    pool = MOTIVATION["high" if pct >= 85 else "mid" if pct >= 60 else "low"]
+    text = pool[salt % len(pool)]
+    if for_parent:
+        text = {"high": "Farzandingiz juda yaxshi o'qiyapti — uni rag'batlantiring! 🌟",
+                "mid": "Farzandingiz yaxshi ketyapti. Uyda biroz qo'llab-quvvatlasangiz, natija yanada yaxshilanadi. 💪",
+                "low": "Farzandingizga ko'proq e'tibor va qo'llab-quvvatlash kerak. Birga takrorlashga undang. 🌱"}["high" if pct >= 85 else "mid" if pct >= 60 else "low"]
+    return text
+
+
 def render_reviewed(student_name: str, title: str, score: float, max_score: float, comment: Optional[str],
-                    for_parent: bool) -> str:
+                    for_parent: bool, motivation_text: Optional[str] = None) -> str:
     who = f"Farzandingiz <b>{esc(student_name)}</b>ning" if for_parent else f"<b>{esc(student_name)}</b>, sizning"
-    lines = [f"✅ {who} «{esc(short(title, 60))}» vazifasi baholandi: <b>{num(score)}/{num(max_score)}</b>"]
+    pct = round(score * 100 / max_score) if max_score else 0
+    lines = [f"✅ {who} «{esc(short(title, 60))}» vazifasi tekshirildi va baholandi.",
+             f"🎯 Olingan baho: <b>{num(score)}/{num(max_score)}</b> ({pct}%)"]
     if comment:
         lines.append(f"💬 Mentor: {esc(short(comment, 300))}")
+    lines += ["", esc(motivation_text or motivation(score, max_score, for_parent, salt=int(score)))]
+    return "\n".join(lines)
+
+
+def render_new_homework(student_name: str, title: str, due_at, max_score: float, group_name: str,
+                        for_parent: bool, kind: str = "homework") -> str:
+    what = "uyga vazifa" if kind == "homework" else "qo'shimcha topshiriq"
+    who = f"Farzandingiz <b>{esc(student_name)}</b> uchun" if for_parent else f"<b>{esc(student_name)}</b>, sizga"
+    lines = [f"📚 {who} yangi {what} berildi!", f"📌 «{esc(short(title, 80))}» ({esc(group_name)})",
+             f"🎯 Maksimal ball: <b>{num(max_score)}</b>"]
+    if due_at:
+        lines.append(f"⏰ Muddat: <b>{fmt_dt(due_at)}</b>")
+    lines += ["", "Vaqtida topshirsangiz jarima bo'lmaydi. Omad! 💪" if not for_parent
+              else "Iltimos, farzandingiz vazifani vaqtida topshirishiga ko'maklashing. 🙏"]
     return "\n".join(lines)

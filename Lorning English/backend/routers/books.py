@@ -1,4 +1,5 @@
 """Kitoblar: Dars kitobi va Lug'at kitobi (PDF). Lug'at kitobidan unitlar avtomatik ajratiladi."""
+import time
 from typing import List, Optional
 
 import pymupdf as fitz
@@ -7,6 +8,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
+from config import settings
 from deps import (get_db, get_current_user, require_role, get_group_for_teacher, get_group_for_member,
                   student_group_ids, teacher_group_ids)
 from messages import AppError
@@ -50,6 +52,17 @@ def _book_for_view(db: Session, book_id: int, user: User) -> Book:
     return b
 
 
+def _translation_model() -> Optional[str]:
+    """Tarjima uchun tez model (masalan gpt-oss): "o'ylovchi" modellar (qwen3) bitta unitga daqiqalab vaqt sarflaydi.
+    AI_MODELS ichida mos model bo'lmasa, asosiy model ishlatiladi."""
+    want = (settings.AI_TRANSLATE_MODEL or "").lower()
+    if want:
+        for m in ai_service.available_models()["models"]:
+            if want in m["id"].lower():
+                return m["id"]
+    return None
+
+
 def _extract_units(path, kind: str) -> list:
     """Kitob PDF idan faqat Unit larni va ularning lug'atini ajratadi.
     Lug'at kitobida unit topilmasa xato; dars kitobida topilmasa kitob baribir saqlanadi (unitsiz)."""
@@ -66,8 +79,31 @@ def _extract_units(path, kind: str) -> list:
             if strict:
                 raise AppError(400, "vocab_need_ai")
             return []
+        model = _translation_model()
+        done = {"n": 0}
+
+        # Asosiy model xato bersa (429, ishlamaydigan model), ro'yxatdagi keyingi modelga o'tiladi
+        choices = [model] + [m["id"] for m in ai_service.available_models()["models"] if m["id"] != model]
+
+        def complete(system: str, text: str, max_tokens: int) -> str:
+            started = time.time()
+            out, last = "", None
+            for choice in choices:
+                try:
+                    out = ai_service.complete(system, text, max_tokens, model_choice=choice)
+                    break
+                except ai_service.AIError as error:
+                    last = error
+                    if error.code == "ai_bad_key":
+                        raise
+            else:
+                raise last
+            done["n"] += 1
+            print(f"[vocab import] tarjima {done['n']}/{len(toc)}-so'rov tayyor ({time.time() - started:.1f}s)")
+            return out
+
         try:
-            return vocab_service.translate_units(toc, ai_service.complete)
+            return vocab_service.translate_units(toc, complete)
         except (ai_service.AIError, ValueError) as error:
             print(f"[vocab import] translation failed ({error.__class__.__name__}: {error})")
             if strict:
@@ -94,7 +130,7 @@ def _extract_units(path, kind: str) -> list:
 
 
 @router.post("/{book_id}/reparse")
-def reparse_book(book_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def reparse_book(book_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     """Kitobdagi unitlarni PDF dan qaytadan ajratadi (noto'g'ri ajralgan bo'lsa). Eski unitlar va ularning natijalari o'chadi."""
     b = db.get(Book, book_id)
     if not b:
@@ -117,7 +153,7 @@ def upload_book(
     group_id: int = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("teacher", "admin")),
+    user: User = Depends(require_role("teacher")),
 ):
     get_group_for_teacher(db, group_id, user)
     rel = storage.save_upload(file, "books", {".pdf"}, max_mb=100)
@@ -204,7 +240,7 @@ def set_unit_access(book_id: int, unit_id: int, data: UnitAccess, db: Session = 
 
 @router.put("/{book_id}/units/{unit_id}")
 def edit_unit(book_id: int, unit_id: int, data: UnitEdit, db: Session = Depends(get_db),
-              user: User = Depends(require_role("teacher", "admin"))):
+              user: User = Depends(require_role("teacher"))):
     """O'qituvchi avtomatik ajratilgan so'zlarni tuzatishi mumkin."""
     b = db.get(Book, book_id)
     u = db.get(VocabUnit, unit_id)
@@ -225,7 +261,7 @@ def edit_unit(book_id: int, unit_id: int, data: UnitEdit, db: Session = Depends(
 
 
 @router.delete("/{book_id}")
-def delete_book(book_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def delete_book(book_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     b = db.get(Book, book_id)
     if not b:
         raise AppError(404, "not_found")

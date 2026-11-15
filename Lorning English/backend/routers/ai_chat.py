@@ -198,7 +198,7 @@ def ai_status(db: Session = Depends(get_db), user: User = Depends(get_current_us
 
 @router.get("/logs")
 def assignment_questions(assignment_id: int, student_id: int, db: Session = Depends(get_db),
-                         user: User = Depends(require_role("teacher", "admin"))):
+                         user: User = Depends(require_role("teacher"))):
     """O'qituvchi uchun: o'quvchi shu vazifa bo'yicha Ustoz AI dan nimalar deb so'ragani (savollar tarixi)."""
     a = db.get(Assignment, assignment_id)
     if not a:
@@ -321,7 +321,7 @@ def stream_reply(session_id: int, data: ChatIn, request: Request, db: Session = 
         raise AppError(400, error.code) from error
     lang = lang_from_request(request)
     limit = _limit_for(db, user)
-    if user.role != "admin" and _used_today(db, user.id) >= limit:
+    if _used_today(db, user.id) >= limit:
         raise AppError(429, "ai_limit", n=limit)  # kuniga 12 ta savol, ertaga yana ochiladi
 
     content = data.content.strip()

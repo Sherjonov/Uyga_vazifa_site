@@ -57,7 +57,7 @@ def update_my_contact(data: ParentContactIn, db: Session = Depends(get_db), user
 
 # ---- O'qituvchi ----
 @router.get("/history")
-def history(student_id: Optional[int] = None, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def history(student_id: Optional[int] = None, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     stmt = (select(ParentMessage, User.name).join(User, User.id == ParentMessage.student_id)
             .where(ParentMessage.teacher_id == user.id).order_by(ParentMessage.id.desc()).limit(200))
     if student_id:
@@ -67,7 +67,7 @@ def history(student_id: Optional[int] = None, db: Session = Depends(get_db), use
 
 
 @router.get("/students")
-def students_with_contacts(db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def students_with_contacts(db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     students = db.scalars(select(User).join(GroupMember, GroupMember.student_id == User.id)
                           .where(GroupMember.group_id.in_(teacher_group_ids(db, user) or [0])).distinct().order_by(User.name)).all()
     ids = [s.id for s in students] or [0]
@@ -87,7 +87,7 @@ def students_with_contacts(db: Session = Depends(get_db), user: User = Depends(r
 
 
 @router.delete("/links/{link_id}")
-def unlink_parent(link_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def unlink_parent(link_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     """O'qituvchi ota-onaning botdagi bog'lanishini uzadi (noto'g'ri ulangan bo'lsa)."""
     link = db.get(ParentLink, link_id)
     if not link:
@@ -99,25 +99,25 @@ def unlink_parent(link_id: int, db: Session = Depends(get_db), user: User = Depe
 
 
 @router.get("/{student_id}/contact")
-def get_contact(student_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def get_contact(student_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     _student_for_teacher(db, student_id, user)
     return _c_out(db.scalar(select(ParentContact).where(ParentContact.student_id == student_id)))
 
 
 @router.put("/{student_id}/contact")
-def set_contact(student_id: int, data: ParentContactIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def set_contact(student_id: int, data: ParentContactIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     _student_for_teacher(db, student_id, user)
     return _save_contact(db, student_id, data)
 
 
 @router.get("/{student_id}/template")
-def template(student_id: int, request: Request, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def template(student_id: int, request: Request, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     student = _student_for_teacher(db, student_id, user)
     gids = student_group_ids(db, student_id)
     return {"body": notifier.build_template(db, student, gids, lang_from_request(request))}
 
 
 @router.post("/send")
-def send(data: ParentSendIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def send(data: ParentSendIn, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     student = _student_for_teacher(db, data.student_id, user)
     return {"results": notifier.send_to_parent(db, user, student, data.body.strip(), data.channel, data.parent_link_id)}

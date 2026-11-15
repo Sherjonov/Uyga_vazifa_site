@@ -376,7 +376,7 @@ def my_retakes(db: Session = Depends(get_db), user: User = Depends(require_role(
 # ---------- O'qituvchi ----------
 
 @router.get("/retake")
-def list_retakes(status: Optional[str] = None, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def list_retakes(status: Optional[str] = None, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     stmt = (select(VocabRetake, VocabUnit, Book, User.name).join(VocabUnit, VocabUnit.id == VocabRetake.unit_id)
             .join(Book, Book.id == VocabUnit.book_id).join(User, User.id == VocabRetake.student_id)
             .where(Book.group_id.in_(teacher_group_ids(db, user) or [0])))
@@ -405,19 +405,19 @@ def _resolve(db: Session, retake_id: int, user: User, status: str, note: Optiona
 
 @router.post("/retake/{retake_id}/approve")
 def approve_retake(retake_id: int, data: ResolveIn = ResolveIn(), db: Session = Depends(get_db),
-                   user: User = Depends(require_role("teacher", "admin"))):
+                   user: User = Depends(require_role("teacher"))):
     return _resolve(db, retake_id, user, "approved", data.note)
 
 
 @router.post("/retake/{retake_id}/reject")
 def reject_retake(retake_id: int, data: ResolveIn = ResolveIn(), db: Session = Depends(get_db),
-                  user: User = Depends(require_role("teacher", "admin"))):
+                  user: User = Depends(require_role("teacher"))):
     return _resolve(db, retake_id, user, "rejected", data.note)
 
 
 @router.get("/attempts")
 def list_attempts(group_id: Optional[int] = None, unit_id: Optional[int] = None, db: Session = Depends(get_db),
-                  user: User = Depends(require_role("teacher", "admin"))):
+                  user: User = Depends(require_role("teacher"))):
     gids = [group_id] if group_id else teacher_group_ids(db, user)
     if group_id:
         get_group_for_teacher(db, group_id, user)
@@ -445,7 +445,7 @@ def _teacher_attempt(db: Session, attempt_id: int, user: User):
 
 
 @router.get("/attempts/{attempt_id}")
-def attempt_detail(attempt_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher", "admin"))):
+def attempt_detail(attempt_id: int, db: Session = Depends(get_db), user: User = Depends(require_role("teacher"))):
     a, u, b = _teacher_attempt(db, attempt_id, user)
     student = db.get(User, a.student_id)
     return {**_a_out(a, u, b, student), "found": a.found or [], "missed": a.missed or [],
