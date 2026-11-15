@@ -34,8 +34,10 @@ from messages import AppError, lang_from_request, t  # noqa: E402
 from routers import (  # noqa: E402
     auth, onboarding, groups, grid, attendance, assignments, tests, retake, rating,
     danger_zone, ai_chat, settings as settings_router, roster, books, vocab, translate,
+    telegram as telegram_router, parents,
 )
 from routers import messages as messages_router  # noqa: E402
+from services import parent_alerts, telegram_bot  # noqa: E402
 
 for sub in ("pdfs", "slides", "submissions", "books"):
     (settings.UPLOAD_DIR / sub).mkdir(parents=True, exist_ok=True)
@@ -47,7 +49,11 @@ async def lifespan(app: FastAPI):
     migrate.run(engine, Base)  # eski bazaga yangi ustunlar qo'shiladi
     with SessionLocal() as db:
         seed.ensure_env_teacher(db)  # .env dagi TEACHER_PHONE / TEACHER_PASSWORD
+    telegram_bot.start()   # Telegram bot (BOT_TOKEN): ota-onalar, o'quvchilar, tasdiqlash kodi
+    parent_alerts.start()  # ota-onalarga avtomatik xabarlar (vazifa topshirilmadi, xavf zonasi)
     yield
+    telegram_bot.stop()
+    parent_alerts.stop()
 
 
 app = FastAPI(title="Learning English API", version="1.0.0", lifespan=lifespan)
@@ -70,7 +76,8 @@ async def validation_handler(request: Request, exc: RequestValidationError):
 
 
 for r in (auth, onboarding, groups, grid, attendance, assignments, tests, retake, rating,
-          danger_zone, ai_chat, messages_router, settings_router, roster, books, vocab, translate):
+          danger_zone, ai_chat, messages_router, settings_router, roster, books, vocab, translate,
+          telegram_router, parents):
     app.include_router(r.router, prefix="/api")
 
 

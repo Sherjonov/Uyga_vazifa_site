@@ -11,5 +11,5 @@ from models.message import DirectMessage, ParentMessage  # noqa: F401
 from models.ticket import Ticket  # noqa: F401
 from models.payment import Payment  # noqa: F401
 from models.telegram import TelegramAccount, ParentLink  # noqa: F401
-from models.automation import StudentPenalty, DangerZoneState  # noqa: F401
+from models.automation import StudentPenalty, DangerZoneState, ParentAlert  # noqa: F401
 from models.book import Book, VocabUnit, VocabAttempt, VocabRetake, VocabFinalAttempt  # noqa: F401

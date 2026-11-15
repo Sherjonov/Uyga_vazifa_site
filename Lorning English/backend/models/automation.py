@@ -17,6 +17,18 @@ class StudentPenalty(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
+class ParentAlert(Base):
+    """Ota-onaga yuborilgan avtomatik xabarlar jurnali: bir hodisa uchun ikki marta xabar yuborilmasligi uchun."""
+    __tablename__ = "parent_alerts"
+    __table_args__ = (UniqueConstraint("student_id", "kind", "ref", name="uq_parent_alert"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    kind: Mapped[str] = mapped_column(String(20))   # attendance | hw_missed | danger
+    ref: Mapped[str] = mapped_column(String(80))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class DangerZoneState(Base):
     __tablename__ = "danger_zone_states"
     __table_args__ = (UniqueConstraint("teacher_id", "student_id", name="uq_danger_zone_state"),)

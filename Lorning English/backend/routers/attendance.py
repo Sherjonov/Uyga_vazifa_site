@@ -11,7 +11,7 @@ from models.attendance import Attendance
 from models.group import Group, GroupMember
 from models.user import User
 from schemas.attendance import AttendanceIn, AttendanceBulkIn
-from services import scoring
+from services import parent_alerts, scoring
 from utils import today
 
 router = APIRouter(prefix="/attendance", tags=["attendance"])
@@ -101,6 +101,7 @@ def set_attendance(data: AttendanceIn, db: Session = Depends(get_db), user: User
         raise AppError(400, "not_in_group")
     apply_status(db, group, data.student_id, data.date, data.status, data.lesson_title)
     db.commit()
+    parent_alerts.notify_attendance_async(group.id, data.student_id, data.date, data.status)  # ota-onaga avtomatik xabar
     student = db.get(User, data.student_id)
     return {"student_id": student.id, "status": data.status, "total_score": scoring.breakdown(db, student.id)["total"]}
 
@@ -112,4 +113,6 @@ def set_attendance_bulk(data: AttendanceBulkIn, db: Session = Depends(get_db), u
     for sid in ids:
         apply_status(db, group, sid, data.date, data.status)
     db.commit()
+    for sid in ids:
+        parent_alerts.notify_attendance_async(group.id, sid, data.date, data.status)
     return {"ok": True, "count": len(ids)}

@@ -18,6 +18,7 @@ from database import SessionLocal
 from messages import AppError
 from models.assignment import Assignment, Submission
 from models.group import Group, GroupMember
+from models.message import DirectMessage
 from models.telegram import ParentLink, TelegramAccount
 from models.user import ParentContact, User
 from security import decode_token, hash_password
@@ -33,21 +34,25 @@ MAX_PARENTS_PER_CHILD = 4  # bitta farzandga ko'pi bilan nechta ota-ona
 
 CMD_START = [("start", "Boshlash"), ("ota_ona", "Ota-ona: farzandni ulash"),
              ("oquvchi", "O'quvchi: ro'yxatdan o'tish"), ("yordam", "Yordam")]
-CMD_PARENT = [("farzandim_statusi", "Farzandim holati (statistika)"), ("farzandim_reytingi", "Farzandimning o'rni"),
-              ("farzandim_vazifalari", "Uyga vazifa va topshiriqlar"), ("farzandim_testlari", "Test natijalari"),
+CMD_PARENT = [("farzandim_bilim_darajasi", "Farzandimning bilim darajasi"), ("status", "Holat: vazifa, lug'at, testlar"),
+              ("reyting", "Reytingdagi o'rni"), ("oqituvchiga_xabar", "O'qituvchiga xabar yuborish"),
+              ("farzandim_vazifalari", "Uyga vazifa va ballar"), ("farzandim_testlari", "Test natijalari"),
               ("farzandim_davomati", "Davomat"), ("farzandlarim", "Farzandlarim"),
               ("ota_ona", "Yana farzand qo'shish"), ("yordam", "Yordam")]
-CMD_STUDENT = [("vazifalarim", "Vazifalarim holati"), ("natijam", "Mening natijam"),
+CMD_STUDENT = [("status", "Holatim: vazifa, lug'at, testlar"), ("vazifalarim", "Vazifalarim holati"), ("natijam", "Mening natijam"),
                ("reyting", "Reytingdagi o'rnim"), ("topshirish", "Uy vazifasini topshirish"), ("yordam", "Yordam")]
 
 REPORTS = {
     "st": bot_texts.render_status, "rk": bot_texts.render_rank, "hw": bot_texts.render_homework,
-    "ts": bot_texts.render_tests, "at": bot_texts.render_attendance,
+    "ts": bot_texts.render_tests, "at": bot_texts.render_attendance, "lv": bot_texts.render_level,
 }
 # buyruq -> hisobot kodi
 PARENT_CMDS = {"farzandim_statusi": "st", "farzandim_reytingi": "rk", "farzandim_vazifalari": "hw",
-               "farzandim_testlari": "ts", "farzandim_davomati": "at"}
-STUDENT_CMDS = {"natijam": "st", "reyting": "rk", "vazifalarim": "hw"}
+               "farzandim_testlari": "ts", "farzandim_davomati": "at",
+               "farzandim_bilim_darajasi": "lv", "farzandim_bilim_daraja": "lv", "bilim_darajasi": "lv"}
+STUDENT_CMDS = {"natijam": "st", "vazifalarim": "hw"}
+# Ota-ona ham, o'quvchi ham ishlata oladigan buyruqlar: ota-onada farzandi, o'quvchida o'zi ko'rsatiladi
+SHARED_CMDS = {"status": "st", "reyting": "rk"}
 
 
 def site_url() -> str:
@@ -195,7 +200,7 @@ def welcome(ctx: Ctx) -> None:
         lines.append(f"🎓 O'quvchi hisobi: <b>{esc(me.name)}</b> — /vazifalarim, /natijam, /reyting")
     if kids:
         lines.append("👨‍👩‍👧 Farzandlaringiz: " + ", ".join(f"<b>{esc(k.name)}</b>" for k in kids))
-        lines.append("/farzandim_statusi · /farzandim_reytingi · /farzandim_vazifalari")
+        lines.append("/farzandim_bilim_darajasi · /status · /reyting · /oqituvchiga_xabar")
     if not me and not kids:
         lines += ["👨‍👩‍👧 <b>Ota-ona</b> bo'lsangiz — farzandingizning o'rni, vazifalari va test natijalarini shu yerda kuzating: /ota_ona",
                   "🎓 <b>O'quvchi</b> bo'lsangiz — ro'yxatdan o'ting yoki hisobingizni ulang: /oquvchi"]
@@ -213,12 +218,15 @@ def cmd_help(ctx: Ctx) -> None:
         "<b>📖 Yordam</b>\n\n"
         "<b>Ota-onalar uchun</b>\n"
         "/ota_ona — farzandni ulash (guruh → ism)\n"
-        "/farzandim_statusi — umumiy holat va statistika\n"
-        "/farzandim_reytingi — guruh va umumiy reytingdagi o'rni\n"
-        "/farzandim_vazifalari — uyga vazifa va topshiriqlar\n"
+        "/farzandim_bilim_darajasi — farzandimning bilim darajasi\n"
+        "/status — bajargan vazifalar (10/15), lug'at va testlar\n"
+        "/reyting — guruh va umumiy reytingdagi o'rni\n"
+        "/oqituvchiga_xabar — o'qituvchiga xabar yuborish\n"
+        "/farzandim_vazifalari — uyga vazifa va olingan ballar\n"
         "/farzandim_testlari — test natijalari (%)\n"
         "/farzandim_davomati — davomat\n"
-        "/farzandlarim — farzandlar ro'yxati\n\n"
+        "/farzandlarim — farzandlar ro'yxati\n"
+        "<i>Davomat, topshirilmagan vazifa, vazifa bahosi va xavf zonasi haqida xabarlar avtomatik keladi.</i>\n\n"
         "<b>O'quvchilar uchun</b>\n"
         "/oquvchi — ro'yxatdan o'tish yoki saytdagi hisobni ulash\n"
         "/vazifalarim — vazifalarim holati\n"
@@ -390,9 +398,11 @@ def link_parent(ctx: Ctx, sid: int) -> None:
         contact.phone = acc.phone
     db.flush()
     show(ctx, f"✅ <b>{esc(student.name)}</b> farzandingiz sifatida ulandi!\n\nEndi quyidagilarni ko'rishingiz mumkin:",
-         kb([[("📊 Holati", f"cp:st:{sid}"), ("🏆 Reyting", f"cp:rk:{sid}")],
-             [("🏠 Vazifalar", f"cp:hw:{sid}"), ("📝 Testlar", f"cp:ts:{sid}"), ("📅 Davomat", f"cp:at:{sid}")]]))
-    send(ctx, "O'qituvchi sizga shu bot orqali xabar yuborishi mumkin. 👨‍🏫")
+         kb([[("🎓 Bilim darajasi", f"cp:lv:{sid}"), ("📊 Holati", f"cp:st:{sid}")],
+             [("🏆 Reyting", f"cp:rk:{sid}"), ("🏠 Vazifalar", f"cp:hw:{sid}")],
+             [("📝 Testlar", f"cp:ts:{sid}"), ("📅 Davomat", f"cp:at:{sid}")]]))
+    send(ctx, "Davomat, topshirilmagan vazifa, vazifa bahosi va xavf zonasi haqida xabarlar shu yerga avtomatik keladi. "
+              "O'qituvchiga yozish: /oqituvchiga_xabar 👨‍🏫")
     refresh_commands(ctx)
 
 
@@ -555,9 +565,10 @@ def allowed_sids(db: Session, acc: TelegramAccount) -> List[int]:
 
 
 def report_kb(sid: int, current: str, multi: bool) -> dict:
-    items = [("st", "📊 Holat"), ("rk", "🏆 Reyting"), ("hw", "🏠 Vazifalar"), ("ts", "📝 Testlar"), ("at", "📅 Davomat")]
+    items = [("lv", "🎓 Bilim darajasi"), ("st", "📊 Holat"), ("rk", "🏆 Reyting"), ("hw", "🏠 Vazifalar"),
+             ("ts", "📝 Testlar"), ("at", "📅 Davomat")]
     items = [(t, f"cp:{k}:{sid}") for k, t in items if k != current]
-    rows = [items[:2], items[2:]]
+    rows = [items[i:i + 2] for i in range(0, len(items), 2)]
     if multi:
         rows.append([("👥 Farzandlarim", "kids")])
     return kb(rows)
@@ -601,6 +612,51 @@ def cmd_children(ctx: Ctx) -> None:
     show(ctx, "👨‍👩‍👧 <b>Farzandlarim</b>\nStatistikani ko'rish uchun ismni bosing:", kb(rows))
 
 
+def cmd_teacher_message(ctx: Ctx) -> None:
+    """/oqituvchiga_xabar: ota-ona farzandining o'qituvchisiga xabar yozadi."""
+    set_state(ctx.acc, None)
+    kids = children(ctx.db, ctx.acc)
+    if not kids:
+        return send(ctx, "ℹ️ Avval farzandingizni ulang: /ota_ona")
+    if len(kids) == 1:
+        return begin_teacher_message(ctx, kids[0].id)
+    send(ctx, "Qaysi farzandingizning o'qituvchisiga xabar yozmoqchisiz?",
+         kb([[(f"👤 {k.name}", f"tm:{k.id}")] for k in kids]))
+
+
+def begin_teacher_message(ctx: Ctx, sid: int) -> None:
+    if sid not in [k.id for k in children(ctx.db, ctx.acc)]:
+        return show(ctx, "⚠️ Bu o'quvchi sizga ulanmagan.")
+    student = ctx.db.get(User, sid)
+    set_state(ctx.acc, "await_teacher_msg", {"sid": sid})
+    send(ctx, f"✍️ <b>{esc(student.name if student else '')}</b> o'qituvchisiga xabaringizni yozing va yuboring "
+              "(1000 belgigacha).\nBekor qilish: /bekor")
+
+
+def finish_teacher_message(ctx: Ctx, text: str) -> None:
+    db, acc = ctx.db, ctx.acc
+    sid = (acc.state_data or {}).get("sid")
+    body = text.strip()
+    if not body:
+        return send(ctx, "⚠️ Xabar bo'sh bo'lmasin. Matn yuboring yoki /bekor bosing.")
+    if len(body) > 1000:
+        return send(ctx, "⚠️ Xabar 1000 belgidan oshmasin. Qisqartirib qayta yuboring.")
+    if sid not in [k.id for k in children(db, acc)]:
+        set_state(acc, None)
+        return send(ctx, "⚠️ Bu o'quvchi sizga ulanmagan: /ota_ona")
+    teachers = db.scalars(select(User).join(Group, Group.teacher_id == User.id)
+                          .join(GroupMember, GroupMember.group_id == Group.id)
+                          .where(GroupMember.student_id == sid).distinct()).all()
+    set_state(acc, None)
+    if not teachers:
+        return send(ctx, "⚠️ Farzandingiz hali guruhga biriktirilmagan, xabarni yuborib bo'lmadi.")
+    who = " · ".join(p for p in (acc.full_name, acc.phone) if p) or "Ota-ona"
+    for t in teachers:
+        # O'qituvchi saytdagi "Xabarlar" bo'limida farzand nomi ostida ko'radi
+        db.add(DirectMessage(sender_id=sid, recipient_id=t.id, body=f"👨‍👩‍👧 Ota-ona ({who}) xabari:\n{body}"))
+    send(ctx, "✅ Xabaringiz o'qituvchiga yuborildi. Javob saytdagi aloqa orqali yoki o'qituvchi tomonidan shu bot orqali keladi.")
+
+
 def unlink_ask(ctx: Ctx, sid: int) -> None:
     st = ctx.db.get(User, sid)
     show(ctx, f"<b>{esc(st.name if st else '')}</b> ni ro'yxatingizdan olib tashlaysizmi?",
@@ -632,6 +688,12 @@ def on_command(ctx: Ctx, cmd: str, arg: str) -> None:
         return cmd_student(ctx)
     if cmd in ("farzandlarim", "farzand"):
         return cmd_children(ctx)
+    if cmd in ("oqituvchiga_xabar", "oqituvchiga"):
+        return cmd_teacher_message(ctx)
+    if cmd in SHARED_CMDS:
+        set_state(ctx.acc, None)
+        own = not children(ctx.db, ctx.acc)  # ota-onada farzandi, farzandi bo'lmasa o'quvchining o'zi
+        return run_report(ctx, SHARED_CMDS[cmd], None, own=own)
     if cmd in PARENT_CMDS:
         set_state(ctx.acc, None)
         return run_report(ctx, PARENT_CMDS[cmd], None)
@@ -667,6 +729,8 @@ def on_callback(ctx: Ctx, data: str) -> None:
             return cmd_parent(ctx) if p[1] == "p" else cmd_student(ctx)
         if k == "as":
             return choose_homework(ctx, int(p[1]))
+        if k == "tm":
+            return begin_teacher_message(ctx, int(p[1]))
     except (IndexError, ValueError):
         pass
 
@@ -676,6 +740,8 @@ def on_text(ctx: Ctx, text: str, msg_id: Optional[int]) -> None:
         return finish_registration(ctx, text.strip(), msg_id)
     if ctx.acc.state == "await_submission":
         return finish_homework_submission(ctx, text)
+    if ctx.acc.state == "await_teacher_msg":
+        return finish_teacher_message(ctx, text)
     send(ctx, "Buyruqlar ro'yxati: /yordam")
 
 

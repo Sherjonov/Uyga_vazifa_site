@@ -83,10 +83,59 @@ def render_status(ov: dict) -> str:
         lines.append(f"📝 <b>Testlar:</b> hali topshirilmagan ({ts['available']} ta mavjud)")
     else:
         lines.append("📝 <b>Testlar:</b> hali yo'q")
+    vc = ov.get("vocab") or {}
+    if vc.get("total"):
+        fin = ""
+        if vc["final_total"]:
+            fin = " · 🏁 yakuniy test: " + ("✅ o'tgan" if vc["final_passed"] else "hali topshirilmagan")
+        lines.append(f"📖 <b>Lug'at:</b> {vc['passed']}/{vc['total']} unit topshirilgan (ball: <b>{num(vc['score'])}</b>){fin}")
+    else:
+        lines.append("📖 <b>Lug'at:</b> hali yo'q")
     if at["total"]:
-        lines.append(f"📅 <b>Davomat:</b> ✅ {at['present']} keldi · ❌ {at['absent']} kelmadi · 🟡 {at['excused']} sababli")
+        lines.append(f"📅 <b>Davomat:</b> ✅ {at['present']} keldi · ⏰ {at['late']} kech qoldi · "
+                     f"❌ {at['absent']} kelmadi · 🟡 {at['excused']} sababli")
     else:
         lines.append("📅 <b>Davomat:</b> hali belgilanmagan")
+    return clip("\n".join(lines))
+
+
+def _pct(part: float, whole: float) -> Optional[float]:
+    return round(part * 100 / whole, 1) if whole else None
+
+
+def render_level(ov: dict) -> str:
+    """Bilim darajasi: testlar, uyga vazifa, lug'at va davomat ko'rsatkichlaridan umumiy baho."""
+    name = esc(ov["student"]["name"])
+    hw, ts, at, vc, sc = ov["homework"], ov["tests"], ov["attendance"], ov.get("vocab") or {}, ov["score"]
+    hw_pct = _pct(hw["points"], hw["max_points"])
+    vc_pct = _pct(vc.get("passed", 0), vc.get("total", 0))
+    at_pct = _pct(at["present"] + at["late"] + at["excused"], at["total"])
+    signals = [v for v in (ts["avg_percent"], hw_pct, vc_pct, at_pct) if v is not None]
+    avg = sum(signals) / len(signals) if signals else None
+    if avg is None:
+        level = "ma'lumot yetarli emas"
+    elif avg >= 85:
+        level = "🌟 <b>A'lo</b>"
+    elif avg >= 70:
+        level = "👍 <b>Yaxshi</b>"
+    elif avg >= 55:
+        level = "🙂 <b>Qoniqarli</b>"
+    else:
+        level = "⚠️ <b>Past</b> — e'tibor kerak"
+    lines = [f"🎓 <b>{name}</b> — bilim darajasi", "", f"Umumiy daraja: {level}"
+             + (f" ({num(avg)}%)" if avg is not None else ""), ""]
+    lines.append(f"📝 Testlar: " + (f"o'rtacha <b>{num(ts['avg_percent'])}%</b> ({ts['taken']} ta)" if ts["taken"] else "hali topshirilmagan"))
+    lines.append("🏠 Uyga vazifa: " + (f"<b>{num(hw['points'])}/{num(hw['max_points'])}</b> ball ({num(hw_pct)}%)" if hw_pct is not None
+                                       else "hali baholanmagan") + f" · topshirilmagan: <b>{hw['missed']}</b>")
+    lines.append("📖 Lug'at: " + (f"<b>{vc['passed']}/{vc['total']}</b> unit ({num(vc_pct)}%)" if vc.get("total") else "hali yo'q"))
+    lines.append("📅 Davomat: " + (f"<b>{num(at_pct)}%</b> qatnashgan ({at['absent']} marta kelmagan, {at['late']} marta kech qolgan)"
+                                   if at_pct is not None else "hali belgilanmagan"))
+    graded = [r for r in hw["rows"] if r["status"] == "graded"][:3]
+    if graded:
+        lines += ["", "So'nggi baholangan vazifalar:"] + [_hw_line(r) for r in graded]
+    lines += ["", f"⭐ Jami ball: <b>{num(sc['total'])}</b>"]
+    for g in ov["groups"]:
+        lines.append(f"👥 {esc(g['name'])}: {_place(g['rank'], g['total'])}")
     return clip("\n".join(lines))
 
 
@@ -143,6 +192,7 @@ def render_attendance(ov: dict) -> str:
         lines.append("· Hali davomat belgilanmagan")
         return "\n".join(lines)
     lines.append(f"✅ Keldi: <b>{at['present']}</b>")
+    lines.append(f"⏰ Kech qoldi: <b>{at['late']}</b>")
     lines.append(f"❌ Kelmadi: <b>{at['absent']}</b>")
     lines.append(f"🟡 Sababli: <b>{at['excused']}</b>")
     if at["recent_absent"]:

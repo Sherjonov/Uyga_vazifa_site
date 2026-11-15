@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from config import settings
 from models.assignment import Assignment, Submission
 from models.attendance import Attendance
+from models.book import Book, VocabAttempt, VocabFinalAttempt, VocabUnit
 from models.group import Group, GroupMember
 from models.test import Test, TestAttempt
 from models.user import User
@@ -137,6 +138,24 @@ def attendance_block(db: Session, student_id: int) -> dict:
     return out
 
 
+def vocab_block(db: Session, student_id: int, gids: List[int]) -> dict:
+    """Lug'at: nechta unit topshirgan (o'tgan), ball va yakuniy test holati."""
+    unit_ids = set(db.scalars(select(VocabUnit.id).join(Book, Book.id == VocabUnit.book_id)
+                              .where(Book.group_id.in_(gids or [0]))).all())
+    best: Dict[int, float] = {}
+    for uid, score in db.execute(select(VocabAttempt.unit_id, VocabAttempt.score).where(
+            VocabAttempt.student_id == student_id, VocabAttempt.status == "finished", VocabAttempt.passed.is_(True))).all():
+        if uid in unit_ids:
+            best[uid] = max(best.get(uid, 0.0), float(score or 0))
+    book_ids = set(db.scalars(select(Book.id).join(VocabUnit, VocabUnit.book_id == Book.id)
+                              .where(Book.group_id.in_(gids or [0]))).all())
+    finals = set(db.scalars(select(VocabFinalAttempt.book_id).where(
+        VocabFinalAttempt.student_id == student_id, VocabFinalAttempt.status == "finished",
+        VocabFinalAttempt.passed.is_(True))).all()) & book_ids
+    return {"total": len(unit_ids), "passed": len(best), "score": round(sum(best.values()), 1),
+            "final_total": len(book_ids), "final_passed": len(finals)}
+
+
 def overview(db: Session, student_id: int) -> Optional[dict]:
     student = db.get(User, student_id)
     if not student or student.role != "student":
@@ -157,4 +176,5 @@ def overview(db: Session, student_id: int) -> Optional[dict]:
         "tasks": assignment_block(db, student_id, gids, "task"),
         "tests": tests_block(db, student_id, gids),
         "attendance": attendance_block(db, student_id),
+        "vocab": vocab_block(db, student_id, gids),
     }

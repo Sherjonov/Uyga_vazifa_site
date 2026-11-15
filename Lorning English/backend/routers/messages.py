@@ -31,7 +31,10 @@ def contacts(db: Session = Depends(get_db), user: User = Depends(get_current_use
                            .where(GroupMember.student_id == user.id).distinct().order_by(User.name)).all()
     elif user.role == "teacher":
         users = db.scalars(select(User).join(GroupMember, GroupMember.student_id == User.id)
-                           .where(GroupMember.group_id.in_(teacher_group_ids(db, user) or [0]), User.claimed.is_(True)).distinct().order_by(User.name)).all()
+                           .where(GroupMember.group_id.in_(teacher_group_ids(db, user) or [0]),
+                                  or_(User.claimed.is_(True),  # ota-ona botdan yozgan bo'lsa, ro'yxatdagi (hali kirmagan) o'quvchi ham ko'rinadi
+                                      User.id.in_(select(DirectMessage.sender_id).where(DirectMessage.recipient_id == user.id))))
+                           .distinct().order_by(User.name)).all()
     else:
         users = []
     unread = dict(db.execute(select(DirectMessage.sender_id, func.count()).where(

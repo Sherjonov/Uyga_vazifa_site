@@ -63,6 +63,12 @@ class Settings:
     REQUIRE_OTP: bool = os.getenv("REQUIRE_OTP", "true").strip().lower() in ("1", "true", "yes", "on")
     APP_TZ_OFFSET: int = _int("APP_TZ_OFFSET", 5)
     UPLOAD_DIR: Path = BASE_DIR / "uploads"
+    # Telegram bot: BOT_TOKEN (asosiy) yoki eski TELEGRAM_BOT_TOKEN
+    TELEGRAM_BOT_TOKEN: str = (os.getenv("BOT_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN") or "").strip().strip('"').strip("'")
+    TELEGRAM_BOT_USERNAME: str = os.getenv("TELEGRAM_BOT_USERNAME", "").strip().lstrip("@")
+    TELEGRAM_POLLING: bool = os.getenv("TELEGRAM_POLLING", "true").strip().lower() in ("1", "true", "yes", "on")
+    PUBLIC_URL: str = os.getenv("PUBLIC_URL", "").strip()
+    ALERTS_INTERVAL_MINUTES: int = _int("ALERTS_INTERVAL_MINUTES", 10)  # avtomatik ota-ona xabarlarini tekshirish oralig'i
     # Birinchi o'qituvchi hisobi (ishga tushganda avtomatik yaratiladi)
     TEACHER_PHONE: str = os.getenv("TEACHER_PHONE", "").strip()
     TEACHER_EMAIL: str = os.getenv("TEACHER_EMAIL", "").strip()

@@ -15,7 +15,7 @@ from models.group import Group, GroupMember
 from models.user import User
 from schemas.assignment import ReviewIn
 from config import settings
-from services import storage, scoring
+from services import storage, scoring, telegram_notify
 from services import ai_service
 from services.document_text import extract_text
 from services.ai_service import AIError
@@ -157,6 +157,8 @@ def review_submission(submission_id: int, data: ReviewIn, db: Session = Depends(
     s.reviewed_at = utcnow()
     scoring.recalculate(db, s.student_id)
     db.commit()
+    if s.score is not None:
+        telegram_notify.notify_reviewed_async(s.id)  # o'quvchi va ota-onaga Telegramdan "vazifa baholandi" xabari
     return _sub_out(s, with_ai=True)
 
 

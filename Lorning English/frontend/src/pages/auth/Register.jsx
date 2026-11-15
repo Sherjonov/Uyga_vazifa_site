@@ -53,10 +53,12 @@ function StudentRegister() {
     if (password !== password2) return toast.error(t('err.passwordMismatch'));
     setBusy(true);
     try {
-      if (requireOtp) {
+      if (requireOtp && method === 'phone') {
+        // Telefon: tasdiqlash kodi Telegram botga yuboriladi
         const { data } = await api.post('/auth/register/request', { identifier });
-        nav('/verify', { state: { identifier: data.identifier, channel: data.channel, resendIn: data.resend_in, devCode: data.dev_code, via: data.via, student: pick, password } });
+        nav('/verify', { state: { identifier: data.identifier, channel: data.channel, resendIn: data.resend_in, devCode: data.dev_code, via: data.via, botUrl: data.bot_url, tgLinked: data.telegram_linked, student: pick, password } });
       } else {
+        // Email: kod kerak emas, faqat parol bilan ro'yxatdan o'tiladi
         const { data } = await api.post('/auth/register/student', { group_id: pick.group_id, name: pick.name, password, identifier });
         startSession(data.access_token, data.user);
         nav('/student/home', { replace: true });
@@ -121,6 +123,7 @@ function StudentRegister() {
                 ? <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="name@example.com" autoComplete="email" autoFocus />
                 : <input className="input" type="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))} placeholder="+998 90 123 45 67" autoComplete="tel" autoFocus />}
             </div>
+            {method === 'phone' && requireOtp && <span className="hint">✈️ {t('otp.tgPhoneHint')}</span>}
           </div>
           <div className="field has-eye">
             <label>{t('auth.password')}</label>

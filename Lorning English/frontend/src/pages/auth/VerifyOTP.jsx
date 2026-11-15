@@ -30,6 +30,7 @@ export default function VerifyOTP() {
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
   const [devCode, setDevCode] = useState(state?.devCode || null);
+  const [bot, setBot] = useState({ via: state?.via, url: state?.botUrl, linked: state?.tgLinked });
   const typing = useRef(null);
   const submitted = useRef('');
 
@@ -111,6 +112,7 @@ export default function VerifyOTP() {
       setCode('');
       submitted.current = '';
       setDevCode(data.dev_code || null);
+      setBot({ via: data.via, url: data.bot_url, linked: data.telegram_linked });
       toast.success(t('auth.codeSent'));
     } catch (err) {
       toast.error(errMsg(err));
@@ -144,7 +146,13 @@ export default function VerifyOTP() {
           <p className="auth-sub">{t('auth.verifySub', { to: identifier })}</p>
           <OtpInput value={code} onChange={setCode} disabled={busy} error={bad} />
           {devCode && <p className="hint center" style={{ marginTop: 14 }}>{t('auth.devHint')}</p>}
-          {channel === 'phone' && !devCode && <p className="hint center" style={{ marginTop: 14 }}>{t('auth.smsAuto')}</p>}
+          {channel === 'phone' && !devCode && bot.via !== 'telegram' && <p className="hint center" style={{ marginTop: 14 }}>{t('auth.smsAuto')}</p>}
+          {bot.via === 'telegram' && (
+            <div className="card stack" style={{ marginTop: 16, gap: 8, textAlign: 'center' }}>
+              <p>{bot.linked ? `✈️ ${t('auth.tgSent')}` : `✈️ ${t('auth.tgNeed')}`}</p>
+              {bot.url && <a className={`btn ${bot.linked ? 'btn-ghost' : 'btn-primary'}`} href={bot.url} target="_blank" rel="noreferrer">{t('auth.tgOpen')}</a>}
+            </div>
+          )}
           <div className="center" style={{ marginTop: 22 }}>
             {busy ? <Spinner /> : left > 0 ? (
               <span className="muted">{t('auth.resendIn', { s: left })}</span>

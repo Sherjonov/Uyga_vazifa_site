@@ -64,6 +64,7 @@ def register_request(data: OTPRequest, request: Request, db: Session = Depends(g
     return {"sent": True, "channel": channel, "identifier": target, "resend_in": RESEND_SECONDS,
             "expires_in": OTP_TTL_MINUTES * 60, "dev": res["dev"],
             "via": res.get("via", "email" if channel == "email" else "sms"),
+            "telegram_linked": res.get("linked"), "bot_url": res.get("bot_url"),
             # Faqat DEV rejimida (email yoki SMS sozlanmagan): kod avtomatik terib beriladi
             "dev_code": code if res["dev"] else None}
 
@@ -143,7 +144,14 @@ def register_student(data: StudentRegister, request: Request, db: Session = Depe
     if len(name) < 2:
         raise AppError(400, "name_invalid")
     otp = None
-    if settings.REQUIRE_OTP:
+    # Email bilan: kod kerak emas, faqat parol. Telefon bilan: Telegram botdan kelgan kod tasdiqlanadi.
+    email_signup = False
+    if data.identifier:
+        try:
+            email_signup = normalize_identifier(data.identifier)[0] == "email"
+        except AppError:
+            email_signup = False
+    if settings.REQUIRE_OTP and not email_signup:
         payload = decode_token(data.registration_token or "")
         if not payload or payload.get("typ") != "register":
             raise AppError(400, "reg_token_invalid")
