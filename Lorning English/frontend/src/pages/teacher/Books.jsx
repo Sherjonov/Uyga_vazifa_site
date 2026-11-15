@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+﻿import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Eye, ListChecks, Lock, RefreshCw, Trash2, Unlock, UploadCloud, Users } from 'lucide-react';
 import PageHeader from '../../components/PageHeader';
@@ -42,7 +42,7 @@ export default function Books() {
     fd.append('type', type); fd.append('title', title.trim()); fd.append('group_id', groupId); fd.append('file', file);
     setBusy(true);
     try {
-      const { data } = await api.post('/books', fd, { timeout: 180000 });
+      const { data } = await api.post('/books', fd, { timeout: 600000 });
       toast.success(type === 'vocab' ? t('book.vocabParsed', { n: data.units_count }) : t('common.saved'));
       setTitle(''); setFile(null); if (input.current) input.current.value = ''; load();
     } catch (err) { toast.error(errMsg(err)); } finally { setBusy(false); }
@@ -51,7 +51,7 @@ export default function Books() {
     if (!window.confirm(t('book.reparseConfirm'))) return;
     setBusy(true);
     try {
-      const { data } = await api.post(`/books/${b.id}/reparse`, null, { timeout: 180000 });
+      const { data } = await api.post(`/books/${b.id}/reparse`, null, { timeout: 600000 });
       toast.success(t('book.reparsed', { n: data.units_count, w: data.words_count })); load();
     } catch (err) { toast.error(errMsg(err)); } finally { setBusy(false); }
   };

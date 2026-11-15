@@ -8,3 +8,4 @@ backend/uploads/*/*
 node_modules/
 frontend/dist/
 backend/private/
+backend/.telegram_bot.lock

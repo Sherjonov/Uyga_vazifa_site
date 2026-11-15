@@ -162,7 +162,8 @@ def check_danger_zone(db: Session) -> int:
 
 
 def run_cycle() -> None:
-    if not tg.is_configured():
+    from services import telegram_bot
+    if not tg.is_configured() or not telegram_bot.owns_lock():  # faqat botni ushlab turgan jarayon yuboradi (ikki marta xabar bormasin)
         return
     with SessionLocal() as db:
         check_missed_homework(db)

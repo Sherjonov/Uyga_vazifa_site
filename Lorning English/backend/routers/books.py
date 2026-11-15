@@ -50,10 +50,10 @@ def _book_for_view(db: Session, book_id: int, user: User) -> Book:
     return b
 
 
-def _extract_units(path, type: str) -> list:
+def _extract_units(path, kind: str) -> list:
     """Kitob PDF idan faqat Unit larni va ularning lug'atini ajratadi.
     Lug'at kitobida unit topilmasa xato; dars kitobida topilmasa kitob baribir saqlanadi (unitsiz)."""
-    strict = type == "vocab"
+    strict = kind == "vocab"
     try:
         text = pdf_to_text(path)
     except Exception:
@@ -69,20 +69,20 @@ def _extract_units(path, type: str) -> list:
         try:
             return vocab_service.translate_units(toc, ai_service.complete)
         except (ai_service.AIError, ValueError) as error:
-            print(f"[vocab import] translation failed ({type(error).__name__}: {error})")
+            print(f"[vocab import] translation failed ({error.__class__.__name__}: {error})")
             if strict:
                 raise AppError(502, "vocab_translate_failed") from None
             return []
 
     # 2) "Unit N" sarlavhalari va "so'z - tarjima" qatorlari
-    if type != "vocab":
+    if kind != "vocab":
         return [u for u in vocab_service.parse_units(text, split_fallback=False) if 2 <= len(u["words"]) <= 500]
     units = vocab_service.parse_units(text)
     if (not units or max((len(unit["words"]) for unit in units), default=0) > 500) and ai_service.is_configured() and len(text.strip()) > 20:
         try:
             extracted = vocab_service.parse_units_with_ai(text, ai_service.complete)
         except (ai_service.AIError, ValueError) as error:
-            print(f"[vocab import] AI extraction failed ({type(error).__name__}); using text parser result.")
+            print(f"[vocab import] AI extraction failed ({error.__class__.__name__}); using text parser result.")
         else:
             if extracted:
                 units = extracted

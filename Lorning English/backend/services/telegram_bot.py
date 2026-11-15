@@ -4,6 +4,7 @@ Ota-ona:   /ota_ona -> guruh -> farzand ismi -> tasdiqlash. So'ng /farzandim_sta
 O'quvchi:  /oquvchi -> raqamni ulashish -> guruh -> ism -> parol. Saytga shu raqam va parol bilan kiradi.
 Sayt:      telefon raqam yozilsa tasdiqlash kodi shu botdan olinadi (services/otp_delivery.py).
 O'qituvchi saytdan tanlangan ota-onaga xabar yozsa, u shu botdagi profiliga tushadi (services/notifier.py)."""
+import os
 import re
 import threading
 import time
@@ -783,6 +784,35 @@ def handle_update(update: dict) -> None:
 
 # ───────────────────────── polling ─────────────────────────
 
+_lock_file = None
+
+
+def owns_lock() -> bool:
+    return _lock_file is not None
+
+
+def _try_lock() -> bool:
+    """Shu kompyuterda botni faqat bitta jarayon ushlab turishi uchun fayl qulfi: ikkinchi `python main.py`
+    (yoki eski qolib ketgan jarayon) Telegramda 409 Conflict keltirib chiqarmasin. Jarayon tugasa qulf o'zi ochiladi."""
+    global _lock_file
+    if _lock_file is not None:
+        return True
+    f = open(settings.UPLOAD_DIR.parent / ".telegram_bot.lock", "a+")
+    try:
+        if os.name == "nt":
+            import msvcrt
+            f.seek(0)
+            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        f.close()
+        return False
+    _lock_file = f
+    return True
+
+
 class _Runner:
     def __init__(self) -> None:
         self.thread: Optional[threading.Thread] = None
@@ -802,6 +832,13 @@ class _Runner:
         self.stop_event.set()
 
     def _loop(self) -> None:
+        told = False
+        while not _try_lock():  # boshqa nusxa botni ushlab turibdi (yoki eski jarayon hali yopilmagan): kutamiz
+            if not told:
+                print("[telegram] Bot boshqa jarayonda ishlayapti; u yopilguncha kutilmoqda (409 to'qnashuvi oldini olish).")
+                told = True
+            if self.stop_event.wait(3):
+                return
         try:
             me = tg.get_me()
         except TelegramError as e:
