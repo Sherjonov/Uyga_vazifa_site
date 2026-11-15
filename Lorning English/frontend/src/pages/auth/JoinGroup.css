@@ -1,0 +1,13 @@
+.join { justify-content: flex-start; max-width: 640px; padding-top: 4vh; }
+.join-card-box { padding: clamp(22px, 3.5vw, 36px); border-radius: 28px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); box-shadow: var(--shadow-lg); animation: scaleIn 0.5s var(--ease) both; }
+.join-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.join-group { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 14px 16px; text-align: left; border: 2px solid var(--border); border-radius: 18px; background: var(--surface-2); color: var(--text); font-family: var(--font); cursor: pointer; transition: all 0.25s var(--ease); }
+.join-group strong { font-size: 1.15rem; } .join-group span { color: var(--text-2); font-size: 0.85rem; } .join-group em { font-style: normal; font-size: 0.75rem; color: var(--primary); font-weight: 650; margin-top: 4px; }
+.join-group:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow); }
+.join-group.selected { border-color: var(--primary); background: var(--primary-soft); box-shadow: 0 0 0 4px var(--primary-soft); }
+.join-names { margin-top: 22px; }
+.join-list { margin-top: 10px; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 2px; }
+.join-name { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); font: 600 0.95rem var(--font); text-align: left; cursor: pointer; transition: all 0.2s var(--ease); }
+.join-name:hover { border-color: var(--primary); transform: translateX(3px); } .join-name.selected { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+.join-empty { display: flex; flex-direction: column; gap: 4px; align-items: center; text-align: center; padding: 26px 14px; border: 1.5px dashed var(--border-strong); border-radius: 16px; color: var(--text-2); }
+.join-hint { text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--text-2); }

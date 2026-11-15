@@ -1,0 +1,9 @@
+.toast-stack { position: fixed; right: 20px; bottom: 20px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; max-width: min(380px, calc(100vw - 32px)); }
+.toast { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-lg); animation: slideInRight 0.35s var(--ease) both; font-size: 0.92rem; font-weight: 500; }
+.toast > svg { flex-shrink: 0; margin-top: 1px; }
+.toast span { flex: 1; word-break: break-word; }
+.toast-success { border-left: 4px solid var(--success); } .toast-success > svg { color: var(--success); }
+.toast-error { border-left: 4px solid var(--danger); } .toast-error > svg { color: var(--danger); }
+.toast-info { border-left: 4px solid var(--info); } .toast-info > svg { color: var(--info); }
+.toast-x { background: none; border: 0; color: var(--text-3); cursor: pointer; padding: 2px; display: grid; }
+@media (max-width: 640px) { .toast-stack { left: 16px; right: 16px; bottom: 16px; max-width: none; } }

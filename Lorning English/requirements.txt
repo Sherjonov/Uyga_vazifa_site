@@ -1,0 +1,14 @@
+fastapi>=0.110
+uvicorn[standard]>=0.27
+sqlalchemy>=2.0
+pydantic>=2.5
+python-jose[cryptography]>=3.3
+passlib[bcrypt]>=1.7.4
+bcrypt==4.0.1
+python-multipart>=0.0.9
+PyMuPDF>=1.24
+httpx>=0.26
+python-dotenv>=1.0
+# Boshqa baza kerak bo'lsa (.env dagi DB_TYPE):
+#   PostgreSQL: python -m pip install psycopg2-binary
+#   MySQL:      python -m pip install pymysql

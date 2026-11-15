@@ -1,0 +1,21 @@
+.chat-msg { display: flex; gap: 12px; max-width: 860px; margin: 0 auto 22px; width: 100%; animation: fadeUp 0.35s var(--ease) both; }
+.chat-msg.user { flex-direction: row-reverse; }
+.chat-ava { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; background: var(--surface-2); color: var(--text-2); }
+.chat-msg.bot .chat-ava { background: var(--grad); color: #fff; box-shadow: 0 6px 16px rgba(91, 91, 240, 0.35); }
+.chat-bubble { min-width: 0; max-width: calc(100% - 50px); }
+.chat-msg.user .chat-bubble { background: var(--primary-soft); padding: 11px 16px; border-radius: 18px 4px 18px 18px; }
+.chat-image { display: block; max-width: min(100%, 360px); max-height: 320px; margin-bottom: 8px; border-radius: 12px; object-fit: contain; }
+.chat-attachment { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; margin-bottom: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; overflow-wrap: anywhere; background: var(--surface); }
+.chat-plain { white-space: pre-wrap; word-break: break-word; }
+.markdown { line-height: 1.7; word-break: break-word; }
+.markdown > *:first-child { margin-top: 0; } .markdown > *:last-child { margin-bottom: 0; }
+.markdown p { margin: 0 0 12px; } .markdown ul, .markdown ol { margin: 0 0 12px; padding-left: 22px; } .markdown li { margin: 4px 0; }
+.markdown h1, .markdown h2, .markdown h3 { margin: 18px 0 8px; font-size: 1.1rem; }
+.markdown a { text-decoration: underline; } .markdown blockquote { margin: 0 0 12px; padding: 4px 14px; border-left: 4px solid var(--primary); color: var(--text-2); background: var(--surface-2); border-radius: 0 10px 10px 0; }
+.markdown table { border-collapse: collapse; margin: 0 0 12px; display: block; overflow-x: auto; } .markdown th, .markdown td { border: 1px solid var(--border); padding: 7px 12px; } .markdown th { background: var(--surface-2); }
+.inline-code { font-family: var(--mono); font-size: 0.86em; padding: 2px 7px; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--border); }
+.code-block { margin: 0 0 14px; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: #0b1020; }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: 7px 14px; font: 600 0.76rem var(--mono); color: #9aa3cc; background: #131a33; text-transform: lowercase; }
+.code-head button { background: none; border: 0; color: #9aa3cc; cursor: pointer; display: grid; padding: 4px; border-radius: 6px; } .code-head button:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.code-block pre { margin: 0; padding: 14px 16px; overflow-x: auto; font: 0.86rem/1.6 var(--mono); color: #e6e9ff; }
+.caret { display: inline-block; width: 8px; height: 1.05em; margin-left: 3px; vertical-align: text-bottom; background: var(--primary); border-radius: 2px; animation: blink 1s steps(2) infinite; }

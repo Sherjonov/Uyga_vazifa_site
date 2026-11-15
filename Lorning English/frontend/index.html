@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="uz" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#080b1a" />
+    <title>Learning English — Ingliz tili o'quv platformasi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script>
+      try {
+        var th = localStorage.getItem('aedu_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', th);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

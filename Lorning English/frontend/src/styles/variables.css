@@ -1,0 +1,79 @@
+:root {
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r: 16px;
+  --r-lg: 22px;
+  --r-xl: 30px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --sidebar-w: 272px;
+  --nav-h: 68px;
+  --brand-1: #5b5bf0;
+  --brand-2: #8b5cf6;
+  --brand-3: #22d3ee;
+  --grad: linear-gradient(135deg, #5b5bf0 0%, #8b5cf6 55%, #c084fc 100%);
+  --grad-soft: linear-gradient(135deg, rgba(91, 91, 240, 0.14), rgba(192, 132, 252, 0.14));
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f3f4fb;
+  --bg-2: #eaecf8;
+  --surface: #ffffff;
+  --surface-2: #f7f8fe;
+  --glass: rgba(255, 255, 255, 0.78);
+  --text: #12142b;
+  --text-2: #4a5072;
+  --text-3: #8089a9;
+  --border: #e2e5f4;
+  --border-strong: #cfd4ea;
+  --primary: #5b5bf0;
+  --primary-hover: #4a4adf;
+  --primary-soft: rgba(91, 91, 240, 0.1);
+  --on-primary: #ffffff;
+  --success: #0f9f6e;
+  --success-soft: rgba(16, 185, 129, 0.12);
+  --warning: #c77a06;
+  --warning-soft: rgba(245, 158, 11, 0.14);
+  --danger: #dc3545;
+  --danger-soft: rgba(239, 68, 68, 0.1);
+  --info: #0b8fc4;
+  --info-soft: rgba(14, 165, 233, 0.12);
+  --shadow-sm: 0 1px 2px rgba(20, 24, 70, 0.06);
+  --shadow: 0 10px 34px rgba(30, 40, 120, 0.09);
+  --shadow-lg: 0 28px 70px rgba(30, 40, 120, 0.18);
+  --overlay: rgba(14, 16, 40, 0.45);
+  --hero-bg: radial-gradient(1200px 600px at 20% 0%, #e7e5ff 0%, transparent 60%), radial-gradient(900px 500px at 100% 100%, #dbeafe 0%, transparent 55%), #f3f4fb;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #080b1a;
+  --bg-2: #0c1124;
+  --surface: #111733;
+  --surface-2: #161d3d;
+  --glass: rgba(17, 23, 51, 0.72);
+  --text: #eef0ff;
+  --text-2: #aeb4d6;
+  --text-3: #727ba5;
+  --border: #222b52;
+  --border-strong: #303a68;
+  --primary: #8080ff;
+  --primary-hover: #9696ff;
+  --primary-soft: rgba(128, 128, 255, 0.15);
+  --on-primary: #0a0d20;
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.14);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --danger: #fb7185;
+  --danger-soft: rgba(251, 113, 133, 0.14);
+  --info: #38bdf8;
+  --info-soft: rgba(56, 189, 248, 0.14);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.6);
+  --overlay: rgba(2, 4, 14, 0.66);
+  --hero-bg: radial-gradient(1100px 600px at 15% 0%, #1a1f52 0%, transparent 60%), radial-gradient(900px 520px at 100% 100%, #0d1c4d 0%, transparent 55%), #080b1a;
+}

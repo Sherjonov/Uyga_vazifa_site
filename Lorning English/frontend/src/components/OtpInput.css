@@ -1,0 +1,6 @@
+.otp { display: flex; gap: 10px; justify-content: center; }
+.otp-cell { width: 52px; height: 62px; text-align: center; font: 700 1.6rem var(--mono); color: var(--text); background: var(--surface-2); border: 2px solid var(--border); border-radius: 16px; transition: all 0.2s var(--ease); caret-color: var(--primary); }
+.otp-cell:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 5px var(--primary-soft); transform: translateY(-3px); background: var(--surface); }
+.otp-cell.filled { border-color: var(--primary); background: var(--primary-soft); animation: pop 0.25s var(--ease); }
+.otp-error .otp-cell { border-color: var(--danger); animation: shake 0.4s; }
+@media (max-width: 420px) { .otp { gap: 6px; } .otp-cell { width: 44px; height: 54px; font-size: 1.35rem; border-radius: 13px; } }

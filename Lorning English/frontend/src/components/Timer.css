@@ -1,0 +1,9 @@
+.timer { position: relative; display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px 14px; border-radius: 16px; background: var(--primary-soft); color: var(--primary); overflow: hidden; min-width: 130px; }
+.timer-body { display: flex; flex-direction: column; line-height: 1.1; }
+.timer-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; }
+.timer strong { font-size: 1.3rem; font-weight: 700; }
+.timer-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(0, 0, 0, 0.08); }
+.timer-bar span { display: block; height: 100%; background: currentColor; transition: width 0.3s linear; }
+.timer.warn { background: var(--warning-soft); color: var(--warning); }
+.timer.danger { background: var(--danger-soft); color: var(--danger); animation: pulseRing 1s infinite; }
+.timer.over { background: var(--danger-soft); color: var(--danger); }

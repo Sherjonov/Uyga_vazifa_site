@@ -1,0 +1,12 @@
+.score-history-stat { display: flex; flex-direction: column; gap: 6px; padding: 14px; }
+.score-history-stat strong { font-size: 1.15rem; color: var(--primary); }
+.score-history-list { gap: 10px; }
+.score-history-event { display: flex; align-items: center; gap: 14px; padding: 14px 16px; }
+.score-history-icon { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 13px; background: var(--primary-soft); }
+.score-history-points { color: var(--success); white-space: nowrap; }
+.score-history-points.negative { color: var(--danger); }
+.score-history-icon.negative { background: var(--danger-soft); }
+@media (max-width: 640px) {
+  .score-history-event { gap: 10px; padding: 12px; }
+  .score-history-event .hint { font-size: 0.75rem; }
+}

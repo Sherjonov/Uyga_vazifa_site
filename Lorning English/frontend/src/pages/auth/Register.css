@@ -1,0 +1,6 @@
+.reg-steps { display: flex; gap: 6px; margin-bottom: 18px; }
+.reg-steps span { flex: 1; height: 5px; border-radius: 5px; background: var(--border-strong); transition: all 0.4s var(--ease); }
+.reg-steps span.on { background: var(--grad); }
+.reg-picked { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 16px; border-radius: 16px; background: var(--primary-soft); }
+.auth-card .join-groups { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.auth-card .join-list { max-height: 240px; }

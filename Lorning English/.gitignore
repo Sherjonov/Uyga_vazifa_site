@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+aedu.db
+.env
+backend/uploads/*/*
+node_modules/
+frontend/dist/
+backend/private/
