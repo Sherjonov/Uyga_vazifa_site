@@ -15,15 +15,34 @@ def _default_sql(col, dialect):
         return None
 
 
-def run(engine, base) -> None:
+def ensure_schema(engine, base) -> None:
+    """Yetishmayotgan jadvallarni yaratadi va eski jadvallarga yangi ustunlarni qo'shadi.
+    Masofaviy bazada tez ishlashi uchun jadval va ustunlar bir necha so'rov bilan o'qiladi."""
+    existing = set(inspect(engine).get_table_names())
+    missing = [t for t in base.metadata.sorted_tables if t.name not in existing]
+    if missing:
+        base.metadata.create_all(bind=engine, tables=missing, checkfirst=False)
+        existing |= {t.name for t in missing}
+    run(engine, base, existing, background=True)
+
+
+def run(engine, base, existing_tables=None, background: bool = False) -> None:
     insp = inspect(engine)
-    existing = set(insp.get_table_names())
+    existing = set(existing_tables) if existing_tables is not None else set(insp.get_table_names())
+    if engine.dialect.name == "mysql":  # bitta so'rov (get_multi_columns masofaviy bazada juda sekin)
+        columns: dict = {}
+        with engine.connect() as conn:
+            for table_name, column_name in conn.execute(text(
+                    "SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = DATABASE()")):
+                columns.setdefault(table_name, []).append({"name": column_name})
+    else:
+        columns = {name: cols for (_, name), cols in insp.get_multi_columns().items()}
     quote = engine.dialect.identifier_preparer.quote
     with engine.begin() as conn:
         for table in base.metadata.sorted_tables:
             if table.name not in existing:
                 continue  # yangi jadvalni create_all yaratadi
-            have = {c["name"] for c in insp.get_columns(table.name)}
+            have = {c["name"] for c in columns.get(table.name, [])}
             for col in table.columns:
                 if col.name in have:
                     continue
@@ -33,10 +52,22 @@ def run(engine, base) -> None:
                     ddl += f" DEFAULT {default}"
                 conn.execute(text(ddl))
                 print(f"[migrate] {table.name}.{col.name} ustuni qo'shildi")
-        _normalize_tracks(conn, existing)
-        _normalize_penalty(conn, existing)
-        _migrate_role_profiles(conn, existing)
-        _drop_legacy_user_score(conn)
+    if not background:
+        _data_fixes(engine, existing)
+    else:  # masofaviy bazada server tezroq ochilishi uchun ma'lumotlarni tuzatish fonda bajariladi
+        import threading
+        threading.Thread(target=_data_fixes, args=(engine, existing), daemon=True).start()
+
+
+def _data_fixes(engine, existing: set) -> None:
+    try:
+        with engine.begin() as conn:
+            _normalize_tracks(conn, existing)
+            _normalize_penalty(conn, existing)
+            _migrate_role_profiles(conn, existing)
+            _drop_legacy_user_score(conn)
+    except Exception as error:  # noqa: BLE001
+        print(f"[migrate] ma'lumotlarni tuzatishda xato: {error}")
 
 
 def _migrate_role_profiles(conn, existing: set[str]) -> None:

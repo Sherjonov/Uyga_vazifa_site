@@ -45,8 +45,7 @@ for sub in ("pdfs", "slides", "submissions", "books"):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)  # jadvallar ishga tushganda avtomatik yaratiladi
-    migrate.run(engine, Base)  # eski bazaga yangi ustunlar qo'shiladi
+    migrate.ensure_schema(engine, Base)  # jadvallar avtomatik yaratiladi, eski bazaga yangi ustunlar qo'shiladi
     with SessionLocal() as db:
         seed.ensure_env_teacher(db)  # .env dagi TEACHER_PHONE / TEACHER_PASSWORD
     telegram_bot.start()   # Telegram bot (BOT_TOKEN): ota-onalar, o'quvchilar, tasdiqlash kodi
@@ -116,8 +115,7 @@ def run() -> None:
     args = parser.parse_args()
 
     if args.demo:
-        Base.metadata.create_all(bind=engine)
-        migrate.run(engine, Base)
+        migrate.ensure_schema(engine, Base)
         with SessionLocal() as db:
             seed.create_demo(db)
 
